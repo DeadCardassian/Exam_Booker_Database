@@ -1,0 +1,1 @@
+This is a repository for NYU database course project. We build a database that manages exam scheduling and registration, including entities for test takers, exams, centers, time slots, and appointments.
