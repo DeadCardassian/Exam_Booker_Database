@@ -165,7 +165,8 @@ INSERT INTO `exam_registration` (`exam_registration_id`, `exam_id`, `test_taker_
 
 CREATE TABLE `exam_sponsor` (
   `exam_sponsor_id` int(11) NOT NULL,
-  `sponsor_name` varchar(50) NOT NULL
+  `sponsor_name` varchar(50) NOT NULL,
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -468,7 +469,7 @@ CREATE TABLE `user` (
   `user_id` int(11) NOT NULL,
   `user_email` varchar(45) DEFAULT NULL,
   `user_password_h` varchar(255) DEFAULT NULL,
-  `user_type` char(2) DEFAULT NULL CHECK (`user_type` in ('TC','TT'))
+  `user_type` char(2) DEFAULT NULL CHECK (`user_type` in ('TC','TT','ES'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -699,6 +700,12 @@ ALTER TABLE `appointment`
 --
 ALTER TABLE `exam`
   ADD CONSTRAINT `exam_ibfk_1` FOREIGN KEY (`exam_sponsor_id`) REFERENCES `exam_sponsor` (`exam_sponsor_id`);
+
+
+-- Constraints for table `exam_sponsor`
+ALTER TABLE `exam_sponsor`
+  ADD CONSTRAINT `exam_sponsor_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
 
 --
 -- Constraints for table `exam_registration`
