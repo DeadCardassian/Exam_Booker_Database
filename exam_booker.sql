@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 08, 2025 at 05:28 PM
+-- Generation Time: Nov 09, 2025 at 01:06 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -43,7 +43,20 @@ CREATE TABLE `appointment` (
 INSERT INTO `appointment` (`appointment_id`, `exam_registration_id`, `accomodations`, `appointment_status`, `seat_number`, `availability_slot_id`) VALUES
 (3, 2, NULL, 'Scheduled', 5, 11),
 (8, 7, NULL, 'Scheduled', 2, 13),
-(9, 3, NULL, 'Cancelled', 3, NULL);
+(9, 3, NULL, 'Cancelled', 3, NULL),
+(11, 3, NULL, 'Scheduled', 1, 14),
+(12, 4, NULL, 'Scheduled', 2, 11),
+(13, 5, NULL, 'Scheduled', 1, 6),
+(14, 6, NULL, 'Scheduled', 1, 27),
+(15, 8, NULL, 'Scheduled', 3, 11),
+(16, 9, NULL, 'Scheduled', 2, 6),
+(17, 10, NULL, 'Scheduled', 1, 17),
+(18, 11, NULL, 'Scheduled', 1, 19),
+(19, 12, NULL, 'Scheduled', 1, 29),
+(20, 13, NULL, 'Scheduled', 1, 22),
+(21, 14, NULL, 'Scheduled', 2, 17),
+(22, 15, NULL, 'Scheduled', 2, 14),
+(23, 16, NULL, 'Scheduled', 3, 6);
 
 --
 -- Triggers `appointment`
@@ -92,33 +105,33 @@ INSERT INTO `exam` (`exam_id`, `exam_sponsor_id`, `exam_name`, `exam_duration`, 
 (3, 2, 'SERIES 7', 225, 'Securities and Investments'),
 (4, 2, 'SERIES 66', 150, 'Securities and Investments'),
 (5, 1, 'Agile Certified Practitioner (PMI-ACP)', 210, 'Agile Management'),
-(6, NULL, 'Certified Administrative Professional (CAP)', 180, 'Office Administration'),
-(7, NULL, 'Organizational Management Specialty', 120, 'Business Administration'),
+(6, 4, 'Certified Administrative Professional (CAP)', 60, 'Office Administration'),
+(7, 4, 'Organizational Management Specialty', 95, 'Business Administration'),
 (8, 4, 'Business Management Essentials', 150, 'Business Leadership'),
 (9, 4, 'Strategic Leadership Certification', 200, 'Leadership and Strategy'),
 (10, 4, 'Performance Management and Analytics', 160, 'Operations Management'),
-(11, 5, 'Network Infrastructure Specialist', 180, 'Networking'),
+(11, 5, 'Network Infrastructure Specialist', 120, 'Networking'),
 (12, 5, 'Cloud Solutions Architect Exam', 240, 'Cloud Computing'),
-(13, 6, 'Certified Medical Office Specialist', 150, 'Healthcare Administration'),
-(14, 6, 'Healthcare Compliance Professional', 200, 'Healthcare Compliance'),
+(13, 6, 'Certified Medical Office Specialist', 60, 'Healthcare Administration'),
+(14, 6, 'Healthcare Compliance Professional', 120, 'Healthcare Compliance'),
 (15, 7, 'Certified Clinical Technician', 120, 'Clinical Practice'),
 (16, 7, 'Medical Records Specialist', 90, 'Health Information Management'),
 (17, 8, 'Renewable Energy Technician', 180, 'Energy Systems'),
-(18, 8, 'Power Systems Safety Certification', 150, 'Electrical Safety'),
-(19, 9, 'Occupational Safety Certification', 120, 'Workplace Safety'),
+(18, 8, 'Power Systems Safety Certification', 55, 'Electrical Safety'),
+(19, 9, 'Occupational Safety Certification', 45, 'Workplace Safety'),
 (20, 9, 'Certified Compliance Auditor', 210, 'Regulatory Compliance'),
 (21, 10, 'Certified Financial Analyst Exam', 240, 'Finance and Investment'),
 (22, 10, 'Accounting Fundamentals Proficiency', 180, 'Accounting'),
-(23, 11, 'Certified Cybersecurity Analyst', 200, 'Cybersecurity'),
-(24, 11, 'Incident Response Specialist', 150, 'Network Defense'),
+(23, 11, 'Certified Cybersecurity Analyst', 60, 'Cybersecurity'),
+(24, 11, 'Incident Response Specialist', 120, 'Network Defense'),
 (25, 12, 'Environmental Impact Assessment Certification', 180, 'Environmental Engineering'),
 (26, 13, 'Professional in Human Resources (PHR)', 180, 'Human Resources'),
-(27, 14, 'Certified Data Analyst', 200, 'Data Analytics'),
-(28, 14, 'AI and Machine Learning Practitioner', 240, 'Artificial Intelligence'),
+(27, 14, 'Certified Data Analyst', 60, 'Data Analytics'),
+(28, 14, 'AI and Machine Learning Practitioner', 90, 'Artificial Intelligence'),
 (29, 14, 'Data Visualization Specialist', 150, 'Data Science'),
 (30, 15, 'Solar Energy Systems Technician', 180, 'Renewable Energy'),
 (31, 15, 'Wind Turbine Maintenance Certification', 150, 'Renewable Energy'),
-(32, 15, 'Energy Storage System Specialist', 210, 'Energy Engineering');
+(32, 15, 'Energy Storage System Specialist', 90, 'Energy Engineering');
 
 -- --------------------------------------------------------
 
@@ -154,7 +167,7 @@ INSERT INTO `exam_registration` (`exam_registration_id`, `exam_id`, `test_taker_
 (12, 27, 12, 'INV-000012', '2025-07-28', 440.00),
 (13, 28, 13, 'INV-000013', '2025-08-13', 1125.00),
 (14, 30, 14, 'INV-000014', '2025-09-02', 380.00),
-(15, NULL, 15, 'INV-000015', '2025-09-27', 740.00),
+(15, 21, 15, 'INV-000015', '2025-09-27', 825.00),
 (16, 6, 2, 'INV-000016', '2025-02-04', 225.00);
 
 -- --------------------------------------------------------
@@ -173,22 +186,22 @@ CREATE TABLE `exam_sponsor` (
 -- Dumping data for table `exam_sponsor`
 --
 
-INSERT INTO `exam_sponsor` (`exam_sponsor_id`, `sponsor_name`) VALUES
-(1, 'Project Management Institute'),
-(2, 'FINRA'),
-(3, 'International Association of Administrative Profes'),
-(4, 'American Management Association'),
-(5, 'Global Information Technology Institute'),
-(6, 'Healthcare Certification Board'),
-(7, 'National Association of Medical Professionals'),
-(8, 'Energy Systems Certification Council'),
-(9, 'International Safety and Compliance Institute'),
-(10, 'Global Finance and Accounting Academy'),
-(11, 'Cybersecurity Standards Organization'),
-(12, 'Environmental Engineering Certification Authority'),
-(13, 'Human Resources Credentialing Group'),
-(14, 'Data Analytics and AI Certification Institute'),
-(15, 'Renewable Energy Training Alliance');
+INSERT INTO `exam_sponsor` (`exam_sponsor_id`, `sponsor_name`, `user_id`) VALUES
+(1, 'Project Management Institute', 56),
+(2, 'FINRA', 42),
+(3, 'International Association of Administrative Profes', 43),
+(4, 'American Management Association', 44),
+(5, 'Global Information Technology Institute', 45),
+(6, 'Healthcare Certification Board', 46),
+(7, 'National Association of Medical Professionals', 47),
+(8, 'Energy Systems Certification Council', 48),
+(9, 'International Safety and Compliance Institute', 49),
+(10, 'Global Finance and Accounting Academy', 50),
+(11, 'Cybersecurity Standards Organization', 51),
+(12, 'Environmental Engineering Certification Authority', 52),
+(13, 'Human Resources Credentialing Group', 53),
+(14, 'Data Analytics and AI Certification Institute', 54),
+(15, 'Renewable Energy Training Alliance', 55);
 
 -- --------------------------------------------------------
 
@@ -254,6 +267,41 @@ CREATE TABLE `sponsor_contract` (
   `sponsor_contract_status` enum('Active','Expired','Draft','Terminated') DEFAULT NULL,
   `rate_per_tester` decimal(8,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sponsor_contract`
+--
+
+INSERT INTO `sponsor_contract` (`sponsor_contract_id`, `exam_sponsor_id`, `sponsor_start_date`, `sponsor_end_date`, `seat_commitment`, `sponsor_contract_status`, `rate_per_tester`) VALUES
+(1, 1, '2020-03-15', '2026-03-14', 500, 'Active', 55.00),
+(2, 2, '2020-11-01', '2026-10-31', 600, 'Active', 59.00),
+(3, 3, '2023-07-30', '2026-07-29', 1000, 'Active', 61.00),
+(4, 4, '2024-03-25', '2026-03-24', 60, 'Active', 63.00),
+(5, 5, '2021-04-10', '2026-04-09', 2000, 'Active', 66.00),
+(6, 6, '2022-01-20', '2027-01-19', 30, 'Active', 69.00),
+(7, 7, '2024-08-10', '2028-08-09', 100, 'Active', 72.00),
+(8, 8, '2021-09-01', '2027-08-31', 75, 'Active', 74.00),
+(9, 9, '2022-06-05', '2027-06-04', 350, 'Active', 77.00),
+(10, 10, '2023-02-14', '2029-02-13', 500, 'Active', 80.00),
+(11, 11, '2025-09-01', '2026-08-31', 1500, 'Active', 82.00),
+(12, 12, '2023-07-30', '2026-07-29', 150, 'Active', 74.00),
+(13, 13, '2020-11-01', '2026-10-31', 250, 'Active', 75.00),
+(14, 14, '2023-02-14', '2029-02-13', 100, 'Active', 60.00),
+(15, 15, '2020-11-01', '2026-10-31', 450, 'Active', 55.00);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `sponsor_exam_details`
+-- (See below for the actual view)
+--
+CREATE TABLE `sponsor_exam_details` (
+`exam_sponsor_id` int(11)
+,`sponsor_name` varchar(50)
+,`exam_id` int(11)
+,`exam_name` varchar(100)
+,`exam_duration` int(11)
+);
 
 -- --------------------------------------------------------
 
@@ -338,42 +386,48 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (3, 1, '2025-12-10', '11:00:00', '12:00:00', 5, 0),
 (4, 1, '2025-12-10', '12:00:00', '16:00:00', 5, 0),
 (5, 1, '2025-12-10', '16:00:00', '18:00:00', 5, 0),
-(6, 1, '2025-12-11', '09:00:00', '10:00:00', 5, 0),
+(6, 1, '2025-12-11', '09:00:00', '10:00:00', 5, 3),
 (7, 1, '2025-12-11', '10:00:00', '11:00:00', 5, 0),
 (8, 1, '2025-12-11', '11:00:00', '12:00:00', 5, 0),
 (9, 1, '2025-12-11', '12:00:00', '16:00:00', 5, 0),
 (10, 1, '2025-12-11', '16:00:00', '18:00:00', 5, 0),
-(11, 1, '2025-12-12', '09:00:00', '13:00:00', 5, 1),
+(11, 1, '2025-12-12', '09:00:00', '13:00:00', 5, 3),
 (12, 2, '2025-12-05', '09:00:00', '11:00:00', 4, 0),
 (13, 2, '2025-12-05', '11:30:00', '13:30:00', 4, 1),
-(14, 2, '2026-01-08', '10:00:00', '12:30:00', 5, 0),
-(15, 3, '2025-12-10', '08:00:00', '10:00:00', 3, 0),
-(17, 3, '2026-01-05', '09:00:00', '12:00:00', 4, 0),
+(14, 2, '2026-01-08', '10:00:00', '12:30:00', 5, 2),
+(15, 3, '2025-12-10', '08:00:00', '09:00:00', 3, 0),
+(17, 3, '2026-01-05', '09:00:00', '12:00:00', 4, 2),
 (18, 4, '2025-12-12', '09:00:00', '11:30:00', 4, 0),
-(19, 4, '2025-12-12', '12:00:00', '15:00:00', 5, 0),
+(19, 4, '2025-12-12', '12:00:00', '15:00:00', 5, 1),
 (20, 4, '2026-01-09', '08:30:00', '11:30:00', 4, 0),
 (21, 4, '2026-01-09', '12:00:00', '13:30:00', 3, 0),
-(22, 5, '2025-12-15', '09:00:00', '10:30:00', 3, 0),
+(22, 5, '2025-12-15', '09:00:00', '10:30:00', 3, 1),
 (23, 5, '2025-12-15', '11:00:00', '13:00:00', 4, 0),
 (24, 5, '2026-01-06', '09:00:00', '11:00:00', 5, 0),
 (25, 6, '2025-12-18', '08:00:00', '10:00:00', 3, 1),
 (26, 6, '2025-12-18', '10:15:00', '12:45:00', 5, 0),
-(27, 6, '2026-01-10', '09:00:00', '12:00:00', 4, 0),
-(28, 7, '2025-12-20', '09:00:00', '11:00:00', 4, 0),
-(29, 7, '2025-12-20', '11:15:00', '13:15:00', 4, 0),
+(27, 6, '2026-01-10', '09:00:00', '12:00:00', 4, 1),
+(28, 7, '2025-12-20', '09:00:00', '10:00:00', 4, 0),
+(29, 7, '2025-12-20', '11:15:00', '12:15:00', 4, 1),
 (30, 7, '2026-01-04', '09:00:00', '12:30:00', 5, 0),
-(31, 8, '2025-12-22', '08:00:00', '10:00:00', 3, 0),
+(31, 8, '2025-12-22', '08:00:00', '09:00:00', 3, 0),
 (32, 8, '2025-12-22', '10:15:00', '13:15:00', 4, 0),
 (33, 8, '2026-01-07', '09:00:00', '11:00:00', 5, 0),
-(34, 9, '2025-12-28', '09:00:00', '11:00:00', 4, 0),
+(34, 9, '2025-12-28', '09:00:00', '10:00:00', 4, 0),
 (35, 9, '2025-12-28', '11:30:00', '14:00:00', 5, 0),
 (36, 9, '2026-01-11', '09:00:00', '10:30:00', 3, 0),
 (37, 10, '2025-12-30', '09:00:00', '12:00:00', 5, 0),
 (38, 10, '2025-12-30', '12:15:00', '14:15:00', 4, 0),
 (39, 10, '2026-01-14', '08:00:00', '10:30:00', 3, 0),
-(40, 11, '2025-12-31', '09:00:00', '11:00:00', 4, 0),
+(40, 11, '2025-12-31', '09:00:00', '10:00:00', 4, 0),
 (41, 11, '2025-12-31', '11:30:00', '13:30:00', 5, 0),
-(42, 11, '2026-01-15', '08:00:00', '10:00:00', 3, 0);
+(42, 11, '2026-01-15', '08:00:00', '10:00:00', 3, 0),
+(43, 8, '2025-12-22', '09:00:00', '10:00:00', 3, 0),
+(44, 7, '2025-12-20', '10:00:00', '11:00:00', 4, 0),
+(45, 11, '2025-12-31', '10:00:00', '11:00:00', 4, 0),
+(46, 9, '2025-12-28', '10:00:00', '11:00:00', 4, 0),
+(47, 3, '2025-12-10', '09:00:00', '10:00:00', 3, 0),
+(48, 7, '2025-12-20', '12:15:00', '13:15:00', 4, 0);
 
 --
 -- Triggers `test_center_availability`
@@ -403,6 +457,23 @@ CREATE TABLE `test_center_contract` (
   `center_contract_status` enum('Active','Expired','Draft','Terminated') DEFAULT NULL,
   `rate_per_seat` decimal(8,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `test_center_contract`
+--
+
+INSERT INTO `test_center_contract` (`test_center_contract_id`, `test_center_id`, `center_start_date`, `center_end_date`, `center_contract_status`, `rate_per_seat`) VALUES
+(1, 1, '2020-03-15', '2026-03-14', 'Active', 45.00),
+(2, 2, '2020-11-01', '2026-10-31', 'Active', 30.00),
+(3, 3, '2023-07-30', '2026-07-29', 'Active', 31.00),
+(4, 4, '2024-03-25', '2026-03-24', 'Active', 18.00),
+(5, 5, '2021-04-10', '2026-04-09', 'Active', 22.00),
+(6, 6, '2022-01-20', '2027-01-19', 'Active', 51.00),
+(7, 7, '2024-08-10', '2028-08-09', 'Active', 60.00),
+(8, 8, '2021-09-01', '2027-08-31', 'Active', 32.00),
+(9, 9, '2022-06-05', '2027-06-04', 'Active', 24.00),
+(10, 10, '2023-02-14', '2029-02-13', 'Active', 30.00),
+(11, 11, '2025-09-01', '2026-08-31', 'Active', 35.00);
 
 -- --------------------------------------------------------
 
@@ -517,7 +588,22 @@ INSERT INTO `user` (`user_id`, `user_email`, `user_password_h`, `user_type`) VAL
 (38, 'grace.lewis@example.com', '1b6453892473a467d07372d45eb05abc', 'TT'),
 (39, 'henry.cho@example.com', '8f14e45fceea167a5a36dedd4bea2543', 'TT'),
 (40, 'irene.park@example.com', 'b53b3a3d6ab90ce0268229151c9bde11', 'TT'),
-(41, 'jason.foster@example.com', '9a1158154dfa42caddbd0694a4e9bdc8', 'TT');
+(41, 'jason.foster@example.com', '9a1158154dfa42caddbd0694a4e9bdc8', 'TT'),
+(42, 'finra@example.com', 'ZqGHl6kF0lZdOrv6Zb8d7edSp8LQqgPwcQxj6kH', 'ES'),
+(43, 'iaa@example.com', '1f0e3dad99908345f7439f8ffabdffc4', 'ES'),
+(44, 'ama@example.com', '98f13708210194c475687be6106a3b84', 'ES'),
+(45, 'giti@example.com', '3b5d5c3712955042212316173ccf37be', 'ES'),
+(46, 'hcb@example.com', 'b6d767d2f8ed5d21a44b0e5886680cb9', 'ES'),
+(47, 'nationalmedical@example.com', '37693cfc748049e45d87b8c7d8b9aacd', 'ES'),
+(48, 'energysystems@example.com', '1ff1de774005f8da13f42943881c655f', 'ES'),
+(49, 'isci@example.com', '8e296a067a37563370ded05f5a3bf3ec', 'ES'),
+(50, 'globalfinance@example.com', '4e732ced3463d06de0ca9a15b6153677', 'ES'),
+(51, 'cyberstandards@example.com', '02e74f10e0327ad868d138f2b4fdd6f0', 'ES'),
+(52, 'eeca@example.com', '33e75ff09dd601bbe69f351039152189', 'ES'),
+(53, 'hrcg@example.com', '6ea9ab1baa0efb9e19094440c317e21b', 'ES'),
+(54, 'dataanalytics@example.com', '34173cb38f07f89ddbebc2ac9128303f', 'ES'),
+(55, 'energytrainingalliance@example.com', '9bf31c7ff062936a96d3c8bd1f8f2ff3', 'ES'),
+(56, 'pmi@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'ES');
 
 -- --------------------------------------------------------
 
@@ -536,6 +622,15 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `scheduled_test_takers`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `scheduled_test_takers`  AS SELECT `e`.`exam_id` AS `exam_id`, `e`.`exam_sponsor_id` AS `exam_sponsor_id`, `e`.`exam_duration` AS `exam_duration`, `t`.`test_taker_id` AS `test_taker_id`, `t`.`state_address` AS `state_address`, `t`.`country` AS `country`, `r`.`exam_registration_id` AS `exam_registration_id`, `a`.`appointment_id` AS `appointment_id`, `a`.`accomodations` AS `accomodations`, `a`.`appointment_status` AS `appointment_status`, `a`.`seat_number` AS `seat_number`, `av`.`availability_slot_id` AS `availability_slot_id`, `av`.`date_of_availability` AS `date_of_availability`, `av`.`start_time_slot` AS `start_time_slot`, `av`.`end_time_slot` AS `end_time_slot`, `av`.`seat_capacity` AS `seat_capacity`, `av`.`scheduled_count` AS `scheduled_count`, `tc`.`test_center_id` AS `test_center_id`, `tc`.`test_center_name` AS `test_center_name`, `tc`.`test_center_street` AS `test_center_street`, `tc`.`test_center_state` AS `test_center_state`, `tc`.`test_center_city` AS `test_center_city`, `tc`.`test_center_country` AS `test_center_country`, `tc`.`test_center_zip_code` AS `test_center_zip_code` FROM (((((`test_taker` `t` join `exam_registration` `r` on(`t`.`test_taker_id` = `r`.`test_taker_id`)) join `exam` `e` on(`r`.`exam_id` = `e`.`exam_id`)) join `appointment` `a` on(`r`.`exam_registration_id` = `a`.`exam_registration_id`)) join `test_center_availability` `av` on(`a`.`availability_slot_id` = `av`.`availability_slot_id`)) join `test_center` `tc` on(`av`.`test_center_id` = `tc`.`test_center_id`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `sponsor_exam_details`
+--
+DROP TABLE IF EXISTS `sponsor_exam_details`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `sponsor_exam_details`  AS SELECT `s`.`exam_sponsor_id` AS `exam_sponsor_id`, `s`.`sponsor_name` AS `sponsor_name`, `e`.`exam_id` AS `exam_id`, `e`.`exam_name` AS `exam_name`, `e`.`exam_duration` AS `exam_duration` FROM (`exam` `e` join `exam_sponsor` `s` on(`e`.`exam_sponsor_id` = `s`.`exam_sponsor_id`)) ;
 
 -- --------------------------------------------------------
 
@@ -577,7 +672,8 @@ ALTER TABLE `exam_registration`
 -- Indexes for table `exam_sponsor`
 --
 ALTER TABLE `exam_sponsor`
-  ADD PRIMARY KEY (`exam_sponsor_id`);
+  ADD PRIMARY KEY (`exam_sponsor_id`),
+  ADD KEY `exam_sponsor_ibfk_1` (`user_id`);
 
 --
 -- Indexes for table `sponsor_contract`
@@ -628,7 +724,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `exam`
@@ -652,7 +748,7 @@ ALTER TABLE `exam_sponsor`
 -- AUTO_INCREMENT for table `sponsor_contract`
 --
 ALTER TABLE `sponsor_contract`
-  MODIFY `sponsor_contract_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sponsor_contract_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `test_center`
@@ -664,13 +760,13 @@ ALTER TABLE `test_center`
 -- AUTO_INCREMENT for table `test_center_availability`
 --
 ALTER TABLE `test_center_availability`
-  MODIFY `availability_slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `availability_slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `test_center_contract`
 --
 ALTER TABLE `test_center_contract`
-  MODIFY `test_center_contract_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_center_contract_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `test_taker`
@@ -682,7 +778,7 @@ ALTER TABLE `test_taker`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- Constraints for dumped tables
@@ -701,18 +797,18 @@ ALTER TABLE `appointment`
 ALTER TABLE `exam`
   ADD CONSTRAINT `exam_ibfk_1` FOREIGN KEY (`exam_sponsor_id`) REFERENCES `exam_sponsor` (`exam_sponsor_id`);
 
-
--- Constraints for table `exam_sponsor`
-ALTER TABLE `exam_sponsor`
-  ADD CONSTRAINT `exam_sponsor_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
-
-
 --
 -- Constraints for table `exam_registration`
 --
 ALTER TABLE `exam_registration`
   ADD CONSTRAINT `exam_registration_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`),
   ADD CONSTRAINT `exam_registration_ibfk_2` FOREIGN KEY (`test_taker_id`) REFERENCES `test_taker` (`test_taker_id`);
+
+--
+-- Constraints for table `exam_sponsor`
+--
+ALTER TABLE `exam_sponsor`
+  ADD CONSTRAINT `exam_sponsor_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 
 --
 -- Constraints for table `sponsor_contract`
