@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 09, 2025 at 10:00 PM
+-- Generation Time: Nov 09, 2025 at 11:22 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -378,7 +378,7 @@ CREATE TABLE `test_center_availability` (
   `start_time_slot` time DEFAULT NULL,
   `end_time_slot` time DEFAULT NULL,
   `seat_capacity` int(11) NOT NULL CHECK (`seat_capacity` >= 0),
-  `scheduled_count` int(11) NOT NULL DEFAULT 0
+  `scheduled_count` int(11) NOT NULL DEFAULT 0 CHECK (`scheduled_count` >= 0 and `scheduled_count` <= `seat_capacity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
