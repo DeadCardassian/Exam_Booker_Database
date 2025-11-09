@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 09, 2025 at 01:06 AM
+-- Generation Time: Nov 09, 2025 at 10:00 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -56,7 +56,10 @@ INSERT INTO `appointment` (`appointment_id`, `exam_registration_id`, `accomodati
 (20, 13, NULL, 'Scheduled', 1, 22),
 (21, 14, NULL, 'Scheduled', 2, 17),
 (22, 15, NULL, 'Scheduled', 2, 14),
-(23, 16, NULL, 'Scheduled', 3, 6);
+(23, 16, NULL, 'Scheduled', 3, 6),
+(24, 1, NULL, 'Cancelled', 1, 4),
+(25, 1, NULL, 'Cancelled', 1, 4),
+(26, 1, NULL, 'Scheduled', 1, 4);
 
 --
 -- Triggers `appointment`
@@ -131,7 +134,8 @@ INSERT INTO `exam` (`exam_id`, `exam_sponsor_id`, `exam_name`, `exam_duration`, 
 (29, 14, 'Data Visualization Specialist', 150, 'Data Science'),
 (30, 15, 'Solar Energy Systems Technician', 180, 'Renewable Energy'),
 (31, 15, 'Wind Turbine Maintenance Certification', 150, 'Renewable Energy'),
-(32, 15, 'Energy Storage System Specialist', 90, 'Energy Engineering');
+(32, 15, 'Energy Storage System Specialist', 90, 'Energy Engineering'),
+(33, 1, 'Risk Management Professional', 150, 'Risk Management');
 
 -- --------------------------------------------------------
 
@@ -325,17 +329,18 @@ CREATE TABLE `test_center` (
 --
 
 INSERT INTO `test_center` (`test_center_id`, `test_center_name`, `test_center_street`, `test_center_city`, `test_center_state`, `test_center_country`, `test_center_zip_code`, `user_id`) VALUES
-(1, 'AVNA Test Center', '123 Main Street', 'New York', 'NY', 'USA', '10021', 2),
-(2, 'Riverview Center', '15 Harbor Blvd', 'Boston', 'MA', 'USA', '02110', 22),
-(3, 'CertifyNow Testing', '98 Tech Park Drive', 'Atlanta', 'GA', 'USA', '30308', 23),
-(4, 'Prometric', '450 Innovation Way', 'Baltimore', 'MD', 'USA', '21202', 24),
-(5, 'Eduveritas Center', '234 University Ave', 'Chicago', 'IL', 'USA', '60616', 25),
-(6, 'AccuTest Analytics', '76 Research Drive', 'San Diego', 'CA', 'USA', '92101', 26),
-(7, 'Summit Certification Group', '300 Summit Blvd', 'Denver', 'CO', 'USA', '80205', 27),
-(8, 'Harborview Testing', '50 Pier Street', 'Seattle', 'WA', 'USA', '98121', 28),
-(9, 'North Shore Labs', '129 Lakefront Rd', 'Minneapolis', 'MN', 'USA', '55401', 29),
-(10, 'Bluesky Center', '400 Aviation Way', 'Dallas', 'TX', 'USA', '75235', 30),
-(11, 'Peak Performance', '85 Mountain View Ave', 'Salt Lake City', 'UT', 'USA', '84101', 31);
+(1, 'AVNA Test Center', '123 Main Street', 'New York', 'NY', 'USA', '10021', 59),
+(2, 'Riverview Center', '15 Harbor Blvd', 'Boston', 'MA', 'USA', '02110', 59),
+(3, 'CertifyNow Testing', '98 Tech Park Drive', 'Atlanta', 'GA', 'USA', '30308', 59),
+(4, 'Prometric', '450 Innovation Way', 'Baltimore', 'MD', 'USA', '21202', 59),
+(5, 'Eduveritas Center', '234 University Ave', 'Chicago', 'IL', 'USA', '60616', 59),
+(6, 'AccuTest Analytics', '76 Research Drive', 'San Diego', 'CA', 'USA', '92101', 59),
+(7, 'Summit Certification Group', '300 Summit Blvd', 'Denver', 'CO', 'USA', '80205', 59),
+(8, 'Harborview Testing', '50 Pier Street', 'Seattle', 'WA', 'USA', '98121', 59),
+(9, 'North Shore Labs', '129 Lakefront Rd', 'Minneapolis', 'MN', 'USA', '55401', 59),
+(10, 'Bluesky Center', '400 Aviation Way', 'Dallas', 'TX', 'USA', '75235', 59),
+(11, 'Peak Performance', '85 Mountain View Ave', 'Salt Lake City', 'UT', 'USA', '84101', 59),
+(12, 'Test Test', '123 Main Street', 'New York', 'NY', 'USA', '10021', 59);
 
 -- --------------------------------------------------------
 
@@ -373,7 +378,7 @@ CREATE TABLE `test_center_availability` (
   `start_time_slot` time DEFAULT NULL,
   `end_time_slot` time DEFAULT NULL,
   `seat_capacity` int(11) NOT NULL CHECK (`seat_capacity` >= 0),
-  `scheduled_count` int(11) NOT NULL CHECK (`scheduled_count` >= 0 and `scheduled_count` <= `seat_capacity`)
+  `scheduled_count` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -384,7 +389,7 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (1, 1, '2025-12-10', '09:00:00', '10:00:00', 5, 0),
 (2, 1, '2025-12-10', '10:00:00', '11:00:00', 5, 0),
 (3, 1, '2025-12-10', '11:00:00', '12:00:00', 5, 0),
-(4, 1, '2025-12-10', '12:00:00', '16:00:00', 5, 0),
+(4, 1, '2025-12-10', '12:00:00', '16:00:00', 5, 1),
 (5, 1, '2025-12-10', '16:00:00', '18:00:00', 5, 0),
 (6, 1, '2025-12-11', '09:00:00', '10:00:00', 5, 3),
 (7, 1, '2025-12-11', '10:00:00', '11:00:00', 5, 0),
@@ -473,7 +478,8 @@ INSERT INTO `test_center_contract` (`test_center_contract_id`, `test_center_id`,
 (8, 8, '2021-09-01', '2027-08-31', 'Active', 32.00),
 (9, 9, '2022-06-05', '2027-06-04', 'Active', 24.00),
 (10, 10, '2023-02-14', '2029-02-13', 'Active', 30.00),
-(11, 11, '2025-09-01', '2026-08-31', 'Active', 35.00);
+(11, 11, '2025-09-01', '2026-08-31', 'Active', 35.00),
+(12, 12, '2025-10-01', '2026-09-30', 'Active', 50.00);
 
 -- --------------------------------------------------------
 
@@ -603,7 +609,8 @@ INSERT INTO `user` (`user_id`, `user_email`, `user_password_h`, `user_type`) VAL
 (53, 'hrcg@example.com', '6ea9ab1baa0efb9e19094440c317e21b', 'ES'),
 (54, 'dataanalytics@example.com', '34173cb38f07f89ddbebc2ac9128303f', 'ES'),
 (55, 'energytrainingalliance@example.com', '9bf31c7ff062936a96d3c8bd1f8f2ff3', 'ES'),
-(56, 'pmi@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'ES');
+(56, 'pmi@example.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'ES'),
+(59, 'testtest@example.com', 'a$2b$12$8YxgE7D9rVw5Y9JfC', 'TC');
 
 -- --------------------------------------------------------
 
@@ -724,13 +731,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `exam`
 --
 ALTER TABLE `exam`
-  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `exam_registration`
@@ -754,19 +761,19 @@ ALTER TABLE `sponsor_contract`
 -- AUTO_INCREMENT for table `test_center`
 --
 ALTER TABLE `test_center`
-  MODIFY `test_center_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `test_center_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `test_center_availability`
 --
 ALTER TABLE `test_center_availability`
-  MODIFY `availability_slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `availability_slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `test_center_contract`
 --
 ALTER TABLE `test_center_contract`
-  MODIFY `test_center_contract_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `test_center_contract_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `test_taker`
@@ -778,7 +785,7 @@ ALTER TABLE `test_taker`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- Constraints for dumped tables
