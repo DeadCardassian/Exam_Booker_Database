@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="company">
+                <div>
+                    <div class="company-name">EXAM BOOKER</div>
+                </div>
+            </div>
+            <nav>
+                <a href="#">About Us</a>
+                <a class="btn yellow circle" href="#">Login</a>
+                <a class="btn yellow circle" href="#">Register</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="left">
+                    <h1>Supercharge your career today.</h1>
+                    <a class="btn yellow" href="#">Register for an exam</a>
+                    <a class="btn purple" href="upload_availabilities.html">Upload availabilities</a>
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

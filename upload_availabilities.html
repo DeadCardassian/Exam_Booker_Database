@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="styles/styles.css">
+
+</head>
+<body>
+    <div class="container">
+         <header>
+            <div>
+                <div class="logo">EXAM BOOKER</div>
+                </div>
+            <nav>
+                <a class="aboutus" href="#about_us">About Us</a>
+                <a class="btn yellow circle" href="#login">Login</a>
+                <a class="btn yellow circle" href="#registration_page">Register</a>
+            </nav>
+        </header>
+
+        <main>
+            <section style="margin-top:18px" aria-label="contact">
+                <div class="card">
+                    <div class="y_heading">
+                        <h3>Upload Availabilitites</h3>
+                    </div>
+                    <p style="padding-left: 20px">Please upload your availabilities in .csv format here. File must contain the following columns:</p>
+                    <ol type="a" style="margin:8px 0 0;padding-left:60px">
+                        <li>Date (YYYY-MM-DD)</li>
+                        <li>Start Time (HH:MM:SS)</li>
+                        <li>End Time (HH:MM:SS)</li>
+                        <li>Duration in Minutes (Number)</li>
+                        <li>Capacity Available (Number)</li>
+                    </ol>
+                    <p></p>
+                    <p style="padding-left: 20px">An unsuccessful upload will result in 0 availabilities being uploaded. Please fix the error and try again.</p>
+                    <section>
+                        <label class="btn purple center" for="fileUpload">Upload Availability File</label>
+                        <input type="file" id="fileUpload" style="display:none;">
+                    </section>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
