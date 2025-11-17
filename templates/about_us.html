@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+
+    <!-- Static CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+    <div class="topbar">
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+            <nav>
+                <a class="aboutus" href="{{ url_for('about') }}">About Us</a>
+                <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
+                <a class="btn yellowb circle" href="{{ url_for('register') }}">Register</a>
+            </nav>
+        </header>
+    </div>
+
+    <div class="container">
+        <main>
+            <div>
+                <h1 style="color:var(--cream)">About Us</h1>
+                <p style="color:var(--cream)">
+                    ExamBooker is a reliable exam management platform that brings together exam sponsors,
+                    test centers, and test takers together in one place.
+                </p>
+
+                <p style="color:var(--cream)">
+                    Our goal is to make the exam process easier for everyone involved.
+                    Test takers can register for and schedule exams, test centers can manage their
+                    available appointments, and exam sponsors can monitor exam registration and scheduling,
+                    all through a single, organized system.
+                </p>
+
+                <p style="color:var(--cream)">
+                    Welcome to ExamBooker, where scheduling for success begins.
+                </p>
+            </div>
+        </main>
+
+        <footer>
+            &copy; <span id="year"></span> ExamBooker
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

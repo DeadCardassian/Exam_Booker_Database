@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+
+    <!-- Flask static CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+    <div class="topbar">
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+            <nav>
+                <a class="aboutus" href="#about_us">About Us</a>
+                <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
+                <a class="btn yellowb circle" href="{{ url_for('register') }}">Register</a>
+            </nav>
+        </header>
+    </div>
+
+    <div class="container">
+
+        <footer>
+            &copy; <span id="year"></span> ExamBooker
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="styles/styles_final.css">
+
+</head>
+<body>
+      <div class="topbar"> 
+        <header>
+            <a class="logo" href="home.html"><img src="images/logo.png" style="width:100px; height:100px; vertical-align:middle;">EXAM BOOKER</a>
+            <nav>
+                <a class="btn yellowb circle" href="">View Availability</a>
+                <a class="btn yellowb circle" href="upload_availabilities.html">Upload Availability</a>
+                <a class="btn yellowb circle" href="">View Contract</a>
+            </nav>
+        </header>
+    </div>
+    <div class="container">
+        <main>                
+            <div class="card cream_bg">
+                <div class="header yellow_bg">
+                    <h1 style="color:var(--grey)">Upload Availabilitites</h>
+                </div>
+                <div style="padding-left: 20px">
+                    <p style="color:var(--grey)">Please upload your availabilities in .csv format here. File must contain the following columns:</p>
+                    <ol style="color:var(--grey)">
+                        <li >Date (YYYY-MM-DD)</li>
+                        <li>Start Time (HH:MM:SS)</li>
+                        <li>End Time (HH:MM:SS)</li>
+                        <li>Duration in Minutes (Number)</li>
+                        <li>Capacity Available (Number)</li>
+                    </ol>
+                    <p></p>
+                    <p style="color:var(--grey)">An unsuccessful upload will result in 0 availabilities being uploaded. Please fix the error and try again.</p>
+                </div>
+                <section>
+                    <label class="btn purpleb long center" for="fileUpload">Upload Availability File</label>
+                    <input type="file" id="fileUpload" style="display:none;">
+                </section>
+            </div>
+        </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
