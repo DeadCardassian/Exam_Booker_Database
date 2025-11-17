@@ -13,10 +13,11 @@ body{
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     line-height:1.5;
+    text-decoration: none;
 }
 
 
-.container{max-width:1000px;margin:32px auto;padding:0 16px;}
+.container{max-width:1000px;margin:32px auto;padding:0 16px;text-decoration:none}
 
 header{
     display:flex;
@@ -25,7 +26,10 @@ header{
     padding:16px 0;
     font-family: "American Typewriter", Georgia, serif;
     font-size:28px;
-    text-decoration: none;
+}
+
+header a {
+  text-decoration: none;
 }
 
 nav a{
@@ -46,6 +50,7 @@ nav a{
     font-size: 45px;
     gap:12px;
     font-weight: 600;
+    text-decoration: none;
 }
 
 .logo:hover{
@@ -57,20 +62,19 @@ nav a{
 }
 
 .hero{
-
-    border-radius:12px;padding:36px;margin:18px 0;
+    padding:36px;margin:18px 0;
     display:flex;flex-direction:row;gap:24px;align-items:center;
 }
 
 .hero .left{flex:1}
 
-.hero h1{margin:0 0 8px;font-size:28px; font-weight:500}
+.hero h1{margin:0 0 8px;font-size:28px; font-weight:500; color: var(--grey)}
 
 .hero p{margin:0 0 16px;color:var(--yellow)}
 
-h3{color:var(--grey);font-family: Menlo, Courier, sans-serif; font-size: 24px; display: flex; justify-content: space-between;padding-left: 10px;}
-p{color:var(--grey); font-family: Menlo, Courier, sans-serif; font-size: 14px}
-ol{color:var(--grey);font-family: Menlo, Courier, sans-serif;font-size: 14px}
+h3{color: black;font-family: Helvetica, Courier, sans-serif; font-size: 24px; display: flex; justify-content: space-between;padding-left: 10px;}
+p{color:black; font-family: Helvetica, Courier, sans-serif; font-size: 14px}
+ol{color:black;font-family: Helvetica, Courier, sans-serif;font-size: 14px}
 
 
 .btn{
@@ -98,7 +102,17 @@ section{
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:18px;}
 
-.card{background:var(--cream);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(16,24,40,0.04)}
+.card{
+    background:var(--cream);
+    background: linear-gradient(to bottom, rgba(248, 246, 235, 1), rgba(248, 246, 235, 0));
+    padding:16px;
+    height: 500px;
+    width: 3000px;
+    border-radius:12px;
+    display: table-cell;
+    vertical-align: top
+}
+
 .y_heading{   
     display:flex;
     background:var(--yellow);

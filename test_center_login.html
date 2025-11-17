@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="styles/styles_final.css">
+</head>
+<body style="overflow: hidden">
+    <div class="topbar"> 
+        <header>
+            <a class="logo" href="home.html"><img src="images/logo.png" style="width:100px; height:100px; vertical-align:middle;">EXAM BOOKER</a>
+            <nav>
+                <a class="aboutus" href="about_us.html">About Us</a>
+                <a class="btn yellowb circle" href="test_taker_login.html">Login</a>
+                <a class="btn yellowb circle" href="registration_page.html">Register</a>
+            </nav>
+        </header>
+    </div>
+
+    <main>
+        <div class="card card_square cream_bg login-card">
+            <section class="top-grid">
+                <a class="login-option login-inactive" href="test_taker_login.html">Test Taker</a>
+                <a class="login-option login-active" href="test_center_login.html">Test Center</a>
+                <a class="login-option login-inactive" href="exam_sponsor_login.html">Exam Sponsor</a>
+            </section>
+            <section>
+                <p style="color:var(--cream)">.</p>
+            </section>
+            <h3 class="grey_txt">Welcome Back!</h3>
+            <section>
+                <form class="login-form">
+                    <label for="username">Username: </label>
+                    <input type="text" id="username" name="username">
+
+                    <label for="password">Password: </label>
+                    <input type="password" id="password" name="password">
+
+                    <button class="btn purpleb">Login</button>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+            &copy; <span id="year"></span> ExamBooker 
+    </footer>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
