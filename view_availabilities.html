@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="styles/styles_final.css">
+
+</head>
+<body>
+      <div class="topbar"> 
+        <header>
+            <a class="logo" href="home.html"><img src="images/logo.png" style="width:100px; height:100px; vertical-align:middle;">EXAM BOOKER</a>
+            <nav>
+                <a class="btn yellowb circle" href="view_availabilities.html">View Availability</a>
+                <a class="btn yellowb circle" href="upload_availabilities.html">Upload Availability</a>
+                <a class="btn yellowb circle" href="center_contract.html">View Contract</a>
+            </nav>
+        </header>
+    </div>
+        <main>                
+            <div class="card cream_bg">
+                <div class="header yellow_bg">
+                    <h1 style="color:var(--grey)">View Availabilitites</h>
+                </div>
+                <div style="padding:20px">
+                   <table class="grey_txt availability">
+                     <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Duration</th>
+                            <th>Original Capacity</th>
+                            <th>Seats Left</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>    
+                    <tbody>
+                        <tr>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                        </tr>
+                        <tr>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                        </tr>
+                        <tr>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                        </tr>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                            <td>SELECT ...</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <nav style="justify-content: center">
+                    <a class="btn purpleb long center" href="upload_availabilities.html">Add More Availability</a>                
+                </nav>
+            </div>
+        </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

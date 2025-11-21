@@ -20,16 +20,18 @@
 
     <main>
         <div class="card card_square cream_bg login-card">
-            <section class="top-grid">
-                <a class="login-option login-active" href="test_taker_login.html">Test Taker</a>
-                <a class="login-option login-inactive" href="test_center_login.html">Test Center</a>
-                <a class="login-option login-inactive" href="exam_sponsor_login.html">Exam Sponsor</a>
-            </section>
             <section>
-                <p style="color:var(--cream)">.</p>
+                <h3 class="grey_txt">Welcome Back!</h3>
+                <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                    <p style="color:var(--grey)">Select User Type</p>
+                    <a><input type="radio" id="tt" name="user_type" value="TT">
+                    <label for="tt">Test Taker</label></a>
+                    <a><input type="radio" id="tc" name="user_type" value="TC">
+                    <label for="tc">Test Center</label></a>
+                    <a><input type="radio" id="javascript" name="user_type" value="ES">
+                    <label for="es">Exam Sponsor</label></a>
+                </div>
             </section>
-            <h3 class="grey_txt">Welcome Back!</h3>
-
             <section>
                 <form class="login-form">
                     <label for="username">Username: </label>
