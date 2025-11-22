@@ -26,7 +26,7 @@ body{
 }
 
 main{
-    height: 600px;
+    padding-top: 100px;
     display: flex;
     justify-content: center; 
     align-items: center; 
@@ -92,8 +92,8 @@ label{
 
 }
 
-.flash-container {  /* for flash */
-    margin-top: 130px;
+.flash-container {  /* for flash */ 
+    margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
 }
@@ -174,6 +174,18 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 .purpleb{
     background-color:var(--purple) !important ;color: var(--cream) !important;border-width: 1px;border-style: solid; border-color:var(--cream); 
 }
+
+.blueb{
+    background-color:var(--blue) !important ;color: var(--cream) !important;border-width: 1px;border-style: solid; border-color:var(--cream); 
+}
+
+.greyb{
+    background-color:var(--grey) !important ;color: var(--cream) !important;border-width: 1px;border-style: solid; border-color:var(--cream); 
+}
+
+.creamb{
+    background-color:var(--cream) !important ;color: var(--grey) !important;border-width: 1px;border-style: solid; border-color:var(--grey); 
+}
 .btn:hover{
     opacity:0.8
 }
@@ -241,7 +253,6 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 
 
 /* LOGIN ========================== */
-
 
 .top-grid {
     position: absolute;
@@ -347,6 +358,17 @@ th{
     font-size: 20px;
     background-color: var(--blue);
     color: var(--yellow);
+}
+
+.availability {
+    text-align:center;
+    font-size: 18px;
+
+}
+
+.contract{
+    text-align:left;
+    font-size: 18px;   
 }
 
 tr:nth-child(odd) {

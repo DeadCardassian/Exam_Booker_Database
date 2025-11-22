@@ -35,41 +35,46 @@
 
     <main>
         <div class="card card_square cream_bg login-card">
+            <form method="POST" action="{{ url_for('login') }}">
+                <section>
+                    <h3 class="grey_txt">Welcome Back!</h3>
+                    <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                        <p style="color:var(--grey)">Select User Type</p>
+                        <a>
+                            <input type="radio" id="tt" name="user_type" value="TT" checked>
+                            <label for="tt">Test Taker</label>
+                        </a>
+
+                        <a>
+                            <input type="radio" id="tc" name="user_type" value="TC">
+                            <label for="tc">Test Center</label>
+                        </a>
+
+                        <a>
+                            <input type="radio" id="es" name="user_type" value="ES">
+                            <label for="es">Exam Sponsor</label>
+                        </a>
+                    </div>
+                </section>
+
+                <section class="login-form">
+                        <label for="username">Username: </label>
+                        <input type="text" id="username" name="username">
+
+                        <label for="password">Password: </label>
+                        <input type="password" id="password" name="password">
+
+                        <button class="btn purpleb">Login</button>
+                </section>
+            </form>
             <section>
-                <h3 class="grey_txt">Welcome Back!</h3>
-                <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
-                    <p style="color:var(--grey)">Select User Type</p>
-
-                    <a>
-                        <input type="radio" id="tt" name="user_type" value="TT">
-                        <label for="tt">Test Taker</label>
-                    </a>
-
-                    <a>
-                        <input type="radio" id="tc" name="user_type" value="TC">
-                        <label for="tc">Test Center</label>
-                    </a>
-
-                    <a>
-                        <input type="radio" id="es" name="user_type" value="ES">
-                        <label for="es">Exam Sponsor</label>
-                    </a>
-                </div>
-            </section>
-
-            <section>
-                <form class="login-form" method="POST" action="{{ url_for('login') }}">
-                    <label for="username">Username: </label>
-                    <input type="text" id="username" name="username">
-
-                    <label for="password">Password: </label>
-                    <input type="password" id="password" name="password">
-
-                    <button class="btn purpleb">Login</button>
-                </form>
+                <p class="yellow">No account?</p>
+                <a class="btn yellowb circle" href="{{ url_for('register') }}">Click here</a>
+                <br>
             </section>
         </div>
     </main>
+    <div class="spacer"></div>
 
     <footer>
         &copy; <span id="year"></span> ExamBooker

@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Exam Booker</title>
-    <link rel="stylesheet" href="styles/styles_final.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
 </head>
 <body style="overflow: hidden">
       <div class="topbar"> 
         <header>
-            <a class="logo" href="home.html"><img src="images/logo.png" style="width:100px; height:100px; vertical-align:middle;">EXAM BOOKER</a>
+            <a class="logo" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" style="width:100px; height:100px; vertical-align:middle;">EXAM BOOKER</a>
             <nav>
                 <a class="btn yellowb circle" href="">View Availability</a>
-                <a class="btn yellowb circle" href="upload_availabilities.html">Upload Availability</a>
+                <a class="btn yellowb circle" href="{{ url_for('upload_availabilities') }}">Upload Availability</a>
                 <a class="btn yellowb circle" href="">View Contract</a>
             </nav>
         </header>
@@ -24,8 +24,8 @@
                 <h3 class="grey_txt" style="text-align:center">Your availability slots have been uploaded!</h3>
                 <div class="confirmationb">
                     <div class="spacer"></div>
-                    <a class="btn purpleb circle" href="my_registrations.html">&nbsp;&nbsp;View My Availabilities</a>
-                    <a class="btn purpleb circle" href="my_appointments.html">Upload More Availabilities</a>
+                    <a class="btn purpleb circle" href="{{ url_for('my_registrations') }}">&nbsp;&nbsp;View My Availabilities</a>
+                    <a class="btn purpleb circle" href="{{ url_for('my_appointments') }}">Upload More Availabilities</a>
                 </div>
             </section>
         </div>

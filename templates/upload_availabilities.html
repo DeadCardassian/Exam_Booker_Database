@@ -25,16 +25,6 @@
     </div>
 
     <!-- Flash messages -->
-    <div class="flash-container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="flash {{ category }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-    </div>
-
     <div class="container">
         <main>
             <div class="card cream_bg">
@@ -53,24 +43,25 @@
                     </ol>
                 </div>
 
-                <!-- File upload form -->
                 <section>
                     <form method="POST"
-                          action="{{ url_for('upload_availabilities') }}"
-                          enctype="multipart/form-data"
-                          class="center">
-
-                        <label class="btn purpleb long center" for="fileUpload">
-                            Upload Availability File
-                        </label>
-
+                        action="{{ url_for('upload_availabilities') }}"
+                        enctype="multipart/form-data">
+                        <label class="btn yellowb" for="fileUpload" style="font-size:20px; ">Upload Availability File</label>
                         <input type="file" id="fileUpload" name="csv_file" style="display:none;" required>
-
-                        <button class="btn yellowb circle" type="submit" style="margin-top:20px;">
-                            Submit
-                        </button>
+                        <button class="btn purpleb circle" type="submit" style="margin-top:20px; font-size: 20px">Submit</button>
                     </form>
                 </section>
+                <div class="flash-container" style="color:red">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+
 
             </div>
         </main>

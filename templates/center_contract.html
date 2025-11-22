@@ -33,38 +33,52 @@
                 </div>
 
                 <div style="padding-left: 20px">
-                    <table class="grey_txt">
+                    <table class="grey_txt contract">
                         <thead>
                             <tr>
                                 <th>Info Category</th>
-                                <th>Contract Detail</th>
+                                {% for d in contract_details %}
+                                    <th>Contract Detail</th>
+                                {% endfor %}
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr>
                                 <td>Test Center ID</td>
-                                <td>{{ test_center_id }}</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.test_center_id }}</td>
+                                {% endfor %}
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td>Test Center Name</td>
-                                <td>{{ test_center_name }}</td>
-                            </tr>
+                                {% for d in contract_details %}
+                                    <td>{{ d.test_center_name }}</td>
+                                {% endfor %}                            
+                            </tr> -->
                             <tr>
                                 <td>Contract Status</td>
-                                <td>{{ contract_status }}</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.center_contract_status }}</td>
+                                {% endfor %}                              
                             </tr>
                             <tr>
                                 <td>Contract Start Date</td>
-                                <td>{{ contract_start }}</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.center_start_date }}</td>
+                                {% endfor %}  
                             </tr>
                             <tr>
                                 <td>Contract End Date</td>
-                                <td>{{ contract_end }}</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.center_end_date }}</td>
+                                {% endfor %}    
                             </tr>
                             <tr>
                                 <td>Rate</td>
-                                <td>{{ rate }}</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.rate_per_seat }}</td>
+                                {% endfor %}                              
                             </tr>
                         </tbody>
                     </table>

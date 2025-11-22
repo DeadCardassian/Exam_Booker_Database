@@ -43,7 +43,6 @@
                             <th>Delete</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for a in availabilities %}
                         <tr>
@@ -52,11 +51,10 @@
                             <td>{{ a.end_time_slot }}</td>
                             <td>{{ a.seat_capacity }}</td>
                             <td>{{ a.seat_capacity - a.scheduled_count }}</td>
-
                             <td>
                                 <form method="POST" action="{{ url_for('delete_availability') }}">
                                     <input type="hidden" name="slot_id" value="{{ a.availability_slot_id }}">
-                                    <button class="btn purpleb square" type="submit">X</button>
+                                    <button class="btn creamb long" type="submit" style="font-size: 18px">Delete</button>
                                 </form>
                             </td>
                         </tr>

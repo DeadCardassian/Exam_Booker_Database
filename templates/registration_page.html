@@ -36,40 +36,49 @@
 
     <main>
         <div class="card card_square cream_bg login-card">
+            <form method="POST" action="{{ url_for('register') }}">
+                <section>
+                    <h3 class="grey_txt">Create an Account</h3>
+                    <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                        <p style="color:var(--grey)">Select User Type</p>
+                        <a>
+                            <input type="radio" id="tt" name="user_type" value="TT" checked>
+                            <label for="tt">Test Taker</label>
+                        </a>
 
-            <form method="POST" action="{{ url_for('register') }}" class="login-form">
+                        <a>
+                            <input type="radio" id="tc" name="user_type" value="TC">
+                            <label for="tc">Test Center</label>
+                        </a>
 
+                        <a>
+                            <input type="radio" id="es" name="user_type" value="ES">
+                            <label for="es">Exam Sponsor</label>
+                        </a>
+                    </div>
+                </section>
 
-                <label>User Type:</label>
+                <section class="login-form">
+                    <label for="username">New Username:</label>
+                    <input type="text" id="username" name="username" required>
 
-                <label>
-                  <input type="radio" name="user_type" value="TT" required>
-                  Test Taker
-                </label>
+                    <label for="password">New Password:</label>
+                    <input type="password" id="password" name="password" required>
 
-                <label>
-                  <input type="radio" name="user_type" value="TC">
-                  Test Center
-                </label>
-
-                <label>
-                  <input type="radio" name="user_type" value="ES">
-                  Exam Sponsor
-                </label>
-
-
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-
-                <button class="btn purpleb" type="submit">Register</button>
-
+                    <button class="btn purpleb" type="submit">Create Account</button>
+                </section>
             </form>
+            <section>
+                <p class="yellow">Already have an account?</p>
+                <a class="btn yellowb circle" href="{{ url_for('login') }}">Click here</a>
+                <br>
+            </section>
         </div>
     </main>
-
+    <div class="spacer"></div>
+    <div class="spacer"></div>
+    <div class="spacer"></div>
+    <div class="spacer"></div>
     <div class="container">
         <footer>
             &copy; <span id="year"></span> ExamBooker
