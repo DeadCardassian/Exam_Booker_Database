@@ -73,6 +73,12 @@ label{
     color: var(--grey);
 
 }
+
+.spacer{
+    height: 20px;
+    width: 100%; 
+}
+
 /* NAV HEADER ========================== */
 .topbar{
     position: fixed;
@@ -84,6 +90,12 @@ label{
     display: flex;
     align-items: center;
 
+}
+
+.flash-container {  /* for flash */
+    margin-top: 130px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 header{
@@ -147,7 +159,7 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
     align-content: center;
 }
 .circle{
-    width:150px; border-radius:30px;
+    width:170px; border-radius:30px;
     white-space: nowrap;
 }
 .square{
@@ -160,7 +172,7 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
     background:var(--yellow);color: var(--grey);border-width: 1px;border-style: solid; border-color:var(--yellow);
 }
 .purpleb{
-    background:var(--purple) !important ;color: var(--cream) !important;border-width: 1px;border-style: solid; border-color:var(--cream); 
+    background-color:var(--purple) !important ;color: var(--cream) !important;border-width: 1px;border-style: solid; border-color:var(--cream); 
 }
 .btn:hover{
     opacity:0.8
@@ -180,6 +192,10 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
     align-items: flex-start;
     background: none;
     width: 80%;
+}
+
+.card_100{
+    width: 100%;
 }
 .cream_bg{
     background:var(--cream);
@@ -289,4 +305,56 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
   padding: 10px 12px;
   border: 1px solid #ccc;
   font-size: 16px;
+}
+
+/* CONFIRMATION PAGES ========================== */
+.confirmation{
+    width: 40%;
+
+}
+.confirmationb{
+    display:grid; grid-template-rows: 2;
+    justify-content: center;
+    align-content: center;
+    gap: 20px;
+}
+.yellow-block{
+    display: block;
+    padding: 5%;
+    background-color: var(--yellow);
+    border-radius: 20px;
+    height: 90%;
+    width: 90%;
+}
+
+/* CONTRACT TABLE ========================== */
+table{
+    padding: 20px;
+    width:  100%;
+    border: 1px solid var(--grey);
+    border-collapse: collapse;
+}
+
+
+/* AVAILABILITY TABLE ========================== */
+
+
+th, td{
+    padding: 10px;
+}
+
+th{
+    font-size: 20px;
+    background-color: var(--blue);
+    color: var(--yellow);
+}
+
+tr:nth-child(odd) {
+  background-color: var(--cream);
+  color: var(--grey);
+}
+
+tr:nth-child(even) {
+  background-color: var(--grey);
+  color: var(--cream);
 }

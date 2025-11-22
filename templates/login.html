@@ -4,11 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Exam Booker</title>
-
-    <!-- Flask static CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
 </head>
 <body style="overflow: hidden">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
     <div class="topbar">
         <header>
             <a class="logo" href="{{ url_for('home') }}">
@@ -16,10 +25,9 @@
                      style="width:100px; height:100px; vertical-align:middle;">
                 EXAM BOOKER
             </a>
-
             <nav>
                 <a class="aboutus" href="{{ url_for('about') }}">About Us</a>
-                <a class="btn yellowb circle" href="{{ url_for('test_taker_login') }}">Login</a>
+                <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
                 <a class="btn yellowb circle" href="{{ url_for('register') }}">Register</a>
             </nav>
         </header>
@@ -27,25 +35,30 @@
 
     <main>
         <div class="card card_square cream_bg login-card">
-            <section class="top-grid">
-                <a class="login-option login-inactive"
-                   href="{{ url_for('test_taker_login') }}">Test Taker</a>
+            <section>
+                <h3 class="grey_txt">Welcome Back!</h3>
+                <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                    <p style="color:var(--grey)">Select User Type</p>
 
-                <a class="login-option login-active"
-                   href="{{ url_for('test_center_login') }}">Test Center</a>
+                    <a>
+                        <input type="radio" id="tt" name="user_type" value="TT">
+                        <label for="tt">Test Taker</label>
+                    </a>
 
-                <a class="login-option login-inactive"
-                   href="{{ url_for('exam_sponsor_login') }}">Exam Sponsor</a>
+                    <a>
+                        <input type="radio" id="tc" name="user_type" value="TC">
+                        <label for="tc">Test Center</label>
+                    </a>
+
+                    <a>
+                        <input type="radio" id="es" name="user_type" value="ES">
+                        <label for="es">Exam Sponsor</label>
+                    </a>
+                </div>
             </section>
 
             <section>
-                <p style="color:var(--cream)">.</p>
-            </section>
-
-            <h3 class="grey_txt">Welcome Back!</h3>
-
-            <section>
-                <form class="login-form" method="POST" action="{{ url_for('test_center_login') }}">
+                <form class="login-form" method="POST" action="{{ url_for('login') }}">
                     <label for="username">Username: </label>
                     <input type="text" id="username" name="username">
 
@@ -67,3 +80,6 @@
     </script>
 </body>
 </html>
+
+
+

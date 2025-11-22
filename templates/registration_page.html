@@ -4,11 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Exam Booker</title>
-
-    <!-- Flask static CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
 </head>
 <body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
     <div class="topbar">
         <header>
             <a class="logo" href="{{ url_for('home') }}">
@@ -16,23 +25,58 @@
                      style="width:100px; height:100px; vertical-align:middle;">
                 EXAM BOOKER
             </a>
+
             <nav>
-                <a class="aboutus" href="#about_us">About Us</a>
+                <a class="aboutus" href="{{ url_for('about') }}">About Us</a>
                 <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
                 <a class="btn yellowb circle" href="{{ url_for('register') }}">Register</a>
             </nav>
         </header>
     </div>
 
-    <div class="container">
+    <main>
+        <div class="card card_square cream_bg login-card">
 
+            <form method="POST" action="{{ url_for('register') }}" class="login-form">
+
+
+                <label>User Type:</label>
+
+                <label>
+                  <input type="radio" name="user_type" value="TT" required>
+                  Test Taker
+                </label>
+
+                <label>
+                  <input type="radio" name="user_type" value="TC">
+                  Test Center
+                </label>
+
+                <label>
+                  <input type="radio" name="user_type" value="ES">
+                  Exam Sponsor
+                </label>
+
+
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+
+                <button class="btn purpleb" type="submit">Register</button>
+
+            </form>
+        </div>
+    </main>
+
+    <div class="container">
         <footer>
             &copy; <span id="year"></span> ExamBooker
         </footer>
     </div>
 
     <script>
-        //gets current year
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>

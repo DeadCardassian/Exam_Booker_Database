@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+
+<body>
+    <div class="topbar">
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+
+            <nav>
+                <a class="btn yellowb circle" href="{{ url_for('view_availabilities') }}">View Availability</a>
+                <a class="btn yellowb circle" href="{{ url_for('upload_availabilities') }}">Upload Availability</a>
+                <a class="btn yellowb circle" href="{{ url_for('center_contract') }}">View Contract</a>
+            </nav>
+        </header>
+    </div>
+
+    <div class="container">
+        <main>
+            <div class="card cream_bg">
+                <div>
+                    <h1 style="color:var(--grey); text-align:center">Contract Details</h1>
+                </div>
+
+                <div style="padding-left: 20px">
+                    <table class="grey_txt">
+                        <thead>
+                            <tr>
+                                <th>Info Category</th>
+                                <th>Contract Detail</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>Test Center ID</td>
+                                <td>{{ test_center_id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Test Center Name</td>
+                                <td>{{ test_center_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Contract Status</td>
+                                <td>{{ contract_status }}</td>
+                            </tr>
+                            <tr>
+                                <td>Contract Start Date</td>
+                                <td>{{ contract_start }}</td>
+                            </tr>
+                            <tr>
+                                <td>Contract End Date</td>
+                                <td>{{ contract_end }}</td>
+                            </tr>
+                            <tr>
+                                <td>Rate</td>
+                                <td>{{ rate }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

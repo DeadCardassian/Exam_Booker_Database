@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+
+    <div class="topbar">
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+
+            <nav>
+                <a class="btn yellowb circle" href="{{ url_for('view_availabilities') }}">View Availability</a>
+                <a class="btn yellowb circle" href="{{ url_for('upload_availabilities') }}">Upload Availability</a>
+                <a class="btn yellowb circle" href="{{ url_for('center_contract') }}">View Contract</a>
+            </nav>
+        </header>
+    </div>
+
+    <main>
+        <div class="card cream_bg">
+            <div class="header yellow_bg">
+                <h1 style="color:var(--grey)">View Availabilities</h1>
+            </div>
+
+            <div style="padding:20px">
+                <table class="grey_txt availability">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Original Capacity</th>
+                            <th>Seats Left</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for a in availabilities %}
+                        <tr>
+                            <td>{{ a.date_of_availability }}</td>
+                            <td>{{ a.start_time_slot }}</td>
+                            <td>{{ a.end_time_slot }}</td>
+                            <td>{{ a.seat_capacity }}</td>
+                            <td>{{ a.seat_capacity - a.scheduled_count }}</td>
+
+                            <td>
+                                <form method="POST" action="{{ url_for('delete_availability') }}">
+                                    <input type="hidden" name="slot_id" value="{{ a.availability_slot_id }}">
+                                    <button class="btn purpleb square" type="submit">X</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <nav style="justify-content: center">
+                <a class="btn purpleb long center" href="{{ url_for('upload_availabilities') }}">
+                    Add More Availability
+                </a>
+            </nav>
+        </div>
+    </main>
+
+    <footer>
+         &copy; <span id="year"></span> ExamBooker
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>

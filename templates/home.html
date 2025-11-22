@@ -4,32 +4,42 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Exam Booker</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
 </head>
 <body>
-    <div class="topbar"> 
+    <div class="topbar">
         <header>
-            <a class="logo" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" style="width:100px; height:100px; vertical-align:middle;"></a>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+
             <nav>
-                <a class="aboutus" href="/about">About Us</a>
-                <a class="btn yellowb circle" href="/test_taker_login">Login</a>
-                <a class="btn yellowb circle" href="/registration_page">Register</a>
+                <a class="aboutus" href="{{ url_for('about') }}">About Us</a>
+                <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
+                <a class="btn yellowb circle" href="{{ url_for('register') }}">Register</a>
             </nav>
         </header>
     </div>
+
     <div class="container">
-            <h1 style="padding: 50px;font-size: 50px; color:var(--cream)">Supercharge your career today.</h1>
-            <nav style="padding-left: 50px">
-                <a class="btn yellowb long">View our sponsors</a>
-                <a class="btn purpleb long" href="upload_availabilities.html">Upload Availabilities</a>
-            </nav>
+        <h1 style="padding: 50px;font-size: 50px; color:var(--cream)">
+            Supercharge your career today.
+        </h1>
+
+        <nav style="padding-left: 50px">
+            <a class="btn yellowb long">View our sponsors</a>
+            <a class="btn purpleb long" href="{{ url_for('upload_availabilities') }}">Upload Availabilities</a>
+        </nav>
+
         <footer>
-             &copy; <span id="year"></span> ExamBooker 
+             &copy; <span id="year"></span> ExamBooker
         </footer>
     </div>
 
     <script>
-        //gets current year
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>

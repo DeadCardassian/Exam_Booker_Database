@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="styles/styles_final.css">
+
+</head>
+<body>
+      <div class="topbar"> 
+        <header>
+            <a class="logo" href="home.html"><img src="images/logo.png" style="width:100px; height:100px; vertical-align:middle;">EXAM BOOKER</a>
+            <nav>
+                <a class="btn yellowb circle" href="sponsor_contract.html">View Contract</a>
+                <a class="btn yellowb circle" href="">View Exams</a>
+                <a class="btn purpleb circle" href="add_exam.html">Add Exam</a>
+
+            </nav>
+        </header>
+    </div>
+    <div class="container">
+        <main>                
+            <div class="card cream_bg">
+                <div>
+                    <h1 style="color:var(--grey); text-align:center">Contract Details</h>
+                </div>
+                <div style="padding-left: 20px">
+                    <table class="grey_txt">
+                        <thead>
+                            <tr>
+                                <th>Info Category</th>
+                                <th>Contract Detail</th>
+                            </tr>
+                        </thead>    
+                        <tbody>
+                            <tr>
+                            <td>Sponsor ID</td>
+                            <td>SELECT ...</td>
+                            </tr>
+                            <tr>
+                            <td>Sponsor Name</td>
+                            <td>SELECT ...</td>
+                            </tr>
+                            <tr>
+                            <td>Contract Status</td>
+                            <td>SELECT ...</td>
+                            </tr>
+                            <td>Contract Start Date</td>
+                            <td>SELECT ...</td>
+                            </tr>
+                            <tr>
+                            <td>Contract End Date</td>
+                            <td>SELECT ...</td>
+                            </tr>
+                            <tr>
+                            <td>Seat Commitment</td>
+                            <td>SELECT ...</td>
+                            </tr>
+                            <tr>
+                            <td>Rate</td>
+                            <td>SELECT ...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+        </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
