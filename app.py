@@ -116,8 +116,8 @@ def log_out():
 
     return redirect(url_for("home"))
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
+@app.route('/create_user', methods=['GET', 'POST'])
+def create_user():
     if request.method == 'POST':
         email = request.form.get('username')     # user email
         password = request.form.get('password')
@@ -136,7 +136,7 @@ def register():
             cursor.close()
             conn.close()
             flash("This email is already registered.", "error")
-            return render_template('registration_page.html')
+            return render_template('create_user.html')
 
         # ---- 2) bcrypt hash ----
         hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -149,28 +149,126 @@ def register():
         """, (email, hashed_pw, user_type))
 
         user_id = cursor.lastrowid
+        session["user_id"] = user_id
+        session["user_type"] = user_type
         conn.commit()
         cursor.close()
         conn.close()
 
-        flash("Registration successful!", "success")
+        # flash("Registration successful!", "success")
 
-        # TODO: Redirect based on user type, let the user fill more info regarding their user type
-        # TODO: This function cannot insert username and passwords. They need to be filled in on the redirect page
-        '''
         if user_type == "TT":
-            return redirect(url_for("register_test_taker_info", user_id=user_id))
+            return redirect(url_for("personal_information", user_id=session.get("user_id"), user_type=session.get("user_type")))
         elif user_type == "TC":
-            return redirect(url_for("register_test_center_info", user_id=user_id))
-        else:
-            return redirect(url_for("register_exam_sponsor_info", user_id=user_id))
-        '''
+            return redirect(url_for("personal_information", user_id=user_id, user_type=session.get("user_type")))
+        else: #if user is ES
+            return redirect(url_for("personal_information", user_id=user_id, user_type=session.get("user_type")))
 
-        return render_template('login.html')
+    return render_template('create_user.html')
 
+@app.route('/personal_information', methods=['GET', 'POST'])
+def personal_information():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    user_id = session.get("user_id")
+    user_type = session.get("user_type")
 
-    return render_template('registration_page.html')
+    if request.method == 'POST':
+        if user_type == "TT":
+            print("in test taker personal_information block")
+            first_name = request.form.get('first_name')     
+            last_name = request.form.get('last_name')
+            phone_number = request.form.get('phone_number') 
+            street = request.form.get('street')     
+            city = request.form.get('city')
+            state_address = request.form.get('state_address')     
+            country = request.form.get('country')
+            zip_code = request.form.get('zip_code') 
 
+            cursor.execute("""
+                SELECT test_taker_id FROM test_taker WHERE user_id = %s
+            """, (user_id,))
+            existing = cursor.fetchone()
+
+            if existing:
+                cursor.close()
+                conn.close()
+                flash("Personal information already completed", "error")
+                return render_template('my_registrations.html')
+            print("user_id from session:", user_id)
+
+            cursor.execute("SELECT * FROM user WHERE user_id = %s", (user_id,))
+            user_exists = cursor.fetchone()
+            print("user exists:", user_exists)
+
+            cursor.execute("""
+                INSERT INTO test_taker (first_name, last_name, phone_number, street, city, state_address, country, zip_code, user_id)
+                VALUES (%s, %s, %s, %s, %s, %s,%s, %s, %s)
+            """, (first_name, last_name, phone_number, street, city, state_address, country, zip_code,user_id, ))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect(url_for("my_registrations", user_id=user_id))
+        
+        if user_type == "TC":
+            test_center_name = request.form.get('test_center_name')     
+            test_center_street = request.form.get('test_center_street')     
+            test_center_city = request.form.get('test_center_city')
+            test_center_state = request.form.get('test_center_state')     
+            test_center_country = request.form.get('test_center_country')
+            test_center_zip_code = request.form.get('test_center_zip_code') 
+
+            cursor.execute("""
+                SELECT test_center_id FROM test_center WHERE user_id = %s
+            """, (user_id,))
+            existing = cursor.fetchone()
+
+            if existing:
+                cursor.close()
+                conn.close()
+                flash("Test center details already saved", "error")
+                return render_template('view_availabilities.html')
+            
+          
+            cursor.execute("""
+                INSERT INTO test_center (test_center_name, test_center_street, test_center_city, test_center_state, test_center_country, test_center_zip_code, user_id)
+                VALUES (%s, %s, %s, %s, %s, %s,%s)
+            """, (test_center_name, test_center_street, test_center_city, test_center_state, test_center_country, test_center_zip_code, user_id,))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect(url_for("view_availabilities", user_id=user_id))
+        if user_type == "ES":
+            sponsor_name = request.form.get('sponsor_name') 
+
+            cursor.execute("""
+                SELECT exam_sponsor_id FROM exam_sponsor WHERE user_id = %s
+            """, (user_id,))
+            existing = cursor.fetchone()
+
+            if existing:
+                cursor.close()
+                conn.close()
+                flash("Exam Sponsor details already saved", "error")
+                return render_template('sponsor_contract.html')
+            
+          
+            cursor.execute("""
+                INSERT INTO exam_sponsor (sponsor_name, user_id)
+                VALUES (%s, %s)
+            """, (sponsor_name, user_id,))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect(url_for("view_sponsor_exams", user_id=user_id))
+
+    return render_template('personal_information.html', user_id=user_id, user_type=user_type)
 
 
 @app.route('/availabilities/upload', methods=['GET', 'POST'])
@@ -403,7 +501,6 @@ def view_sponsor_exams():
         """,(sponsor_id, sponsor_id, sponsor_id))
 
         exams = cursor.fetchall()
-        print("CURSOR: ", exams)                 
         cursor.close()
         conn.close()
         return render_template('view_sponsor_exams.html', exams = exams)

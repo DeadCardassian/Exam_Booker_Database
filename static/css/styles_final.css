@@ -93,9 +93,10 @@ label{
 }
 
 .flash-container {  /* for flash */ 
-    margin-top: 20px;
+    color: red;
+    /* margin-top: 20px;
     margin-left: 20px;
-    margin-right: 20px;
+    margin-right: 20px; */
 }
 
 header{
@@ -254,7 +255,7 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 .card_square{
     border-radius: 0px;
     width: 400px;
-    height: 400px;
+
 }
 
 
@@ -333,6 +334,11 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 }
 .sponsor-exam-form-grid{
     display:grid; grid-template-rows: auto auto auto; grid-template-columns: auto auto;
+    gap: 16px
+}
+
+.reg-form-grid{
+    display:grid; grid-template-rows: auto auto auto auto; grid-template-columns: auto auto;
     gap: 16px
 }
 .sponsor-exam-form label {

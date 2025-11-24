@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+    <div class="topbar">
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+
+            <nav>
+                <a class="aboutus" href="{{ url_for('about') }}">About Us</a>
+                <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
+                <a class="btn yellowb circle" href="{{ url_for('create_user') }}">Register</a>
+            </nav>
+        </header>
+    </div>
+
+    <main>
+        <div class="card cream_bg">
+                {% if user_type == "TT" %}
+                <section>
+                    <section>
+                        <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                            <h3 class="grey_txt">Add Personal Information</h3>
+                        </div>
+                    </section>
+                    <form class="sponsor-exam-form blue_bg" method="POST" action="{{ url_for('personal_information') }}">
+                        <div class="reg-form-grid">
+                                <label for="first_name">First Name: </label>
+                                <input type="text" id="first_name" name="first_name">
+                                <label for="last_name">Last Name: </label>
+                                <input type="text" id="last_name" name="last_name">
+                                <label for="phone_number">Phone Number: </label>
+                                <input type="text" id="phone_number" name="phone_number">
+                                <label for="street">Street Address: </label>
+                                <input type="text" id="street" name="street">
+                                <label for="city">City: </label>
+                                <input type="text" id="city" name="city">
+                                <label for="state_address">State: </label>
+                                <input type="text" id="state_address" name="state_address">
+                                <label for="country">Country: </label>
+                                <input type="text" id="country" name="country">
+                                <label for="zip_code">Zip Code: </label>
+                                <input type="text" id="zip_code" name="zip_code">
+                        </div>
+                        <br>
+                        <div class="flash-container" style="color:red">
+                            <pre>{{ debug_sql }}</pre>
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                <div class="flash {{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        <nav style="justify-content: center">
+                            <button class="btn yellowb long " type="submit">Finish Registration</button>
+                        </nav>
+                    </form>
+                </section>
+                {% endif %}
+                {% if user_type == "TC" %}
+                <section>
+                    <section>
+                        <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                            <h3 class="grey_txt">Add Test Center Details</h3>
+                        </div>
+                    </section>
+                    <form class="sponsor-exam-form blue_bg" method="POST" action="{{ url_for('personal_information') }}">
+                        <div class="reg-form-grid">
+                                <label for="test_center_name">Test Center Name: </label>
+                                <input type="text" id="test_center_name" name="test_center_name">
+                                <label for="test_center_street">Street Address: </label>
+                                <input type="text" id="test_center_street" name="test_center_street">
+                                <label for="test_center_city">City: </label>
+                                <input type="text" id="test_center_city" name="test_center_city">
+                                <label for="test_center_state">State: </label>
+                                <input type="text" id="test_center_state" name="test_center_state">
+                                <label for="test_center_country">Country: </label>
+                                <input type="text" id="test_center_country" name="test_center_country">
+                                <label for="test_center_zip_code">Zip Code: </label>
+                                <input type="text" id="test_center_zip_code" name="test_center_zip_code">
+                        </div>
+                        <br>
+                        <div class="flash-container" style="color:red">
+                            <pre>{{ debug_sql }}</pre>
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                <div class="flash {{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        <nav style="justify-content: center">
+                            <button class="btn yellowb circle" type="submit">Finish Registration</button>
+                        </nav>
+                    </form>
+                </section>
+                {% endif %}
+                {% if user_type == "ES" %}
+                <section>
+                    <section>
+                        <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                            <h3 class="grey_txt">Add Exam Sponsor Details</h3>
+                        </div>
+                    </section>
+                    <form class="sponsor-exam-form blue_bg" method="POST" action="{{ url_for('personal_information') }}">
+                    <div class="reg-form-grid">
+                            <label for="sponsor_name">Exam Sponsor Name: </label>
+                            <input type="text" id="sponsor_name" name="sponsor_name">
+                    </div>
+                    <br>
+                    <div class="flash-container" style="color:red">
+                        <pre>{{ debug_sql }}</pre>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                    <nav style="justify-content: center">
+                        <button class="btn yellowb circle" type="submit">Finish Registration</button>
+                    </nav>
+                    </form>
+                </section>
+                {% endif %}
+        </div>
+    </main>
+    <div class="container">
+        <footer>
+            &copy; <span id="year"></span> ExamBooker
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

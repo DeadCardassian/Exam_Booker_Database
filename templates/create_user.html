@@ -7,17 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
 </head>
 <body>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-container">
-          {% for category, message in messages %}
-            <div class="flash {{ category }}">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-
     <div class="topbar">
         <header>
             <a class="logo" href="{{ url_for('home') }}">
@@ -29,14 +18,14 @@
             <nav>
                 <a class="aboutus" href="{{ url_for('about') }}">About Us</a>
                 <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
-                <a class="btn yellowb circle" href="{{ url_for('register') }}">Register</a>
+                <a class="btn yellowb circle" href="{{ url_for('create_user') }}">Register</a>
             </nav>
         </header>
     </div>
 
     <main>
         <div class="card card_square cream_bg login-card">
-            <form method="POST" action="{{ url_for('register') }}">
+            <form method="POST" action="{{ url_for('create_user') }}">
                 <section>
                     <h3 class="grey_txt">Create an Account</h3>
                     <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
@@ -64,12 +53,20 @@
 
                     <label for="password">New Password:</label>
                     <input type="password" id="password" name="password" required>
-
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            <div class="flash-container">
+                                {% for category, message in messages %}
+                                <div class="flash {{ category }}">{{ message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
                     <button class="btn purpleb" type="submit">Create Account</button>
                 </section>
             </form>
             <section>
-                <p class="yellow">Already have an account?</p>
+                <p style="color:var(--grey)">Already have an account?</p>
                 <a class="btn yellowb circle" href="{{ url_for('login') }}">Click here</a>
                 <br>
             </section>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+      <div class="topbar"> 
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+            <nav>
+                <a class="btn yellowb circle" href="{{ url_for('my_registrations') }}">My Registrations</a>
+                <a class="btn yellowb circle">My Appointments</a>
+                <a class="btn purpleb" href="{{ url_for('log_out') }}">Log Out</a>
+            
+            </nav>
+        </header>
+    </div>
+
+    <main>
+        <div class="card cream_bg">
+            <section>
+                <section>
+                    <div style="background-color: var(--yellow); padding: 10px; border-radius: 30px">
+                        <h3 class="grey_txt">Register for an Exam</h3>
+                    </div>
+                </section>
+                <form class="sponsor-exam-form blue_bg" method="POST" action="{{ url_for('personal_information') }}">
+                    <div class="reg-form-grid">
+                            
+                    </div>
+                    <br>
+                    <div class="flash-container" style="color:red">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                    <nav style="justify-content: center">
+                        <button class="btn yellowb long " type="submit">Finish Registration</button>
+                    </nav>
+                </form>
+            </section>
+        </div>
+    </main>
+    <div class="container">
+        <footer>
+            &copy; <span id="year"></span> ExamBooker
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

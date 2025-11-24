@@ -8,16 +8,6 @@
 </head>
 <body style="overflow: hidden">
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-container">
-          {% for category, message in messages %}
-            <div class="flash {{ category }}">{{ message }}</div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-
     <div class="topbar">
         <header>
             <a class="logo" href="{{ url_for('home') }}">
@@ -28,7 +18,7 @@
             <nav>
                 <a class="aboutus" href="{{ url_for('about') }}">About Us</a>
                 <a class="btn yellowb circle" href="{{ url_for('login') }}">Login</a>
-                <a class="btn yellowb circle" href="{{ url_for('register') }}">Register</a>
+                <a class="btn yellowb circle" href="{{ url_for('create_user') }}">Register</a>
             </nav>
         </header>
     </div>
@@ -63,19 +53,30 @@
 
                         <label for="password">Password: </label>
                         <input type="password" id="password" name="password">
-
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                <div class="flash-container">
+                                    {% for category, message in messages %}
+                                    <div class="flash {{ category }}">{{ message }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
                         <button class="btn purpleb">Login</button>
+
                 </section>
             </form>
+
             <section>
-                <p class="yellow">No account?</p>
-                <a class="btn yellowb circle" href="{{ url_for('register') }}">Click here</a>
+                <p style="color:var(--grey)">No account?</p>
+                <a class="btn yellowb circle" href="{{ url_for('create_user') }}">Click here</a>
                 <br>
             </section>
         </div>
     </main>
     <div class="spacer"></div>
-
+    <br>
+    <br>
     <footer>
         &copy; <span id="year"></span> ExamBooker
     </footer>
