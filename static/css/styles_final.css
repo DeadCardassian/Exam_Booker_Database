@@ -216,6 +216,12 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 .yellow_bg{
     background:var(--yellow);
 }
+
+.blue_bg{
+    background:var(--blue);
+}
+
+
 .grey_txt{
     color: var(--grey);
 }
@@ -313,6 +319,31 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 }
 
 .login-form input {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+.sponsor-exam-form {
+    gap: 16px;
+    margin-top: 20px;
+    width: 94%;
+    border-radius: 30px;
+    padding: 20px;
+    padding-left: -20px;
+}
+.sponsor-exam-form-grid{
+    display:grid; grid-template-rows: auto auto auto; grid-template-columns: auto auto;
+    gap: 16px
+}
+.sponsor-exam-form label {
+    color: var(--cream);
+    text-align: left;
+    font-size: 18px;
+    margin-bottom: -10px;
+}
+
+.sponsor-exam-form input {
+
   padding: 10px 12px;
   border: 1px solid #ccc;
   font-size: 16px;

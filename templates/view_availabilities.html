@@ -21,6 +21,7 @@
                 <a class="btn yellowb circle" href="{{ url_for('view_availabilities') }}">View Availability</a>
                 <a class="btn yellowb circle" href="{{ url_for('upload_availabilities') }}">Upload Availability</a>
                 <a class="btn yellowb circle" href="{{ url_for('center_contract') }}">View Contract</a>
+                <a class="btn purpleb" href="{{ url_for('log_out') }}">Log Out</a>
             </nav>
         </header>
     </div>
@@ -35,10 +36,11 @@
                 <table class="grey_txt availability">
                     <thead>
                         <tr>
+                            <th>Slot ID</th>
                             <th>Date</th>
                             <th>Start Time</th>
                             <th>End Time</th>
-                            <th>Original Capacity</th>
+                            <th>Capacity</th>
                             <th>Seats Left</th>
                             <th>Delete</th>
                         </tr>
@@ -46,6 +48,7 @@
                     <tbody>
                         {% for a in availabilities %}
                         <tr>
+                            <td>{{ a.availability_slot_id }}</td>
                             <td>{{ a.date_of_availability }}</td>
                             <td>{{ a.start_time_slot }}</td>
                             <td>{{ a.end_time_slot }}</td>
@@ -62,7 +65,15 @@
                     </tbody>
                 </table>
             </div>
-
+            <div class="flash-container" style="color:red">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
             <nav style="justify-content: center">
                 <a class="btn purpleb long center" href="{{ url_for('upload_availabilities') }}">
                     Add More Availability

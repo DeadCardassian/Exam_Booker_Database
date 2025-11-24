@@ -27,6 +27,28 @@ def home():
 def about():
     return render_template('about_us.html')
 
+@app.route('/view_sponsors')
+def view_sponsors():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT 
+                DISTINCT(sponsor_name)
+            FROM sponsor_exam_details
+            ORDER BY sponsor_name ASC
+        """)
+
+        sponsors = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('view_sponsors.html', sponsors=sponsors)
+
+    except:
+        return render_template('view_sponsors.html', sponsors="No Sponsors to View")
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -68,16 +90,16 @@ def login():
         stored_hash = user['user_password_h'].encode('utf-8')
 
         if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
-            flash("Login successful!", "success")
+            # flash("Login successful!", "success")
             if user_type == "TT":
                 session["user_id"] = user_id
                 return redirect(url_for("my_registrations", user_id=user_id))
             elif user_type == "TC":
                 session["user_id"] = user_id
-                return redirect(url_for("upload_availabilities", user_id=user_id))
+                return redirect(url_for("view_availabilities", user_id=user_id))
             else:
                 session["user_id"] = user_id
-                return redirect(url_for("offered_exams", user_id=user_id))
+                return redirect(url_for("sponsor_contract", user_id=user_id))
                
         else:
             flash("Incorrect password.", "error")
@@ -85,7 +107,14 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/log_out')
+def log_out():
+    session.clear()
+    user_id = session.get("user_id")
+    print("*********LOGGED OUT********")
+    print(user_id)
 
+    return redirect(url_for("home"))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -143,10 +172,6 @@ def register():
     return render_template('registration_page.html')
 
 
-@app.route('/sponsors/view')
-def view_sponsors():
-    #TODO
-    return 'Sponsors page (TODO)'
 
 @app.route('/availabilities/upload', methods=['GET', 'POST'])
 def upload_availabilities():
@@ -226,6 +251,7 @@ def view_availabilities():
 
         cursor.execute("""
             SELECT 
+                availability_slot_id,
                 date_of_availability,
                 start_time_slot,
                 end_time_slot,
@@ -233,7 +259,7 @@ def view_availabilities():
                 scheduled_count
             FROM test_centers_with_availability
             WHERE test_center_id = %s
-            ORDER BY date_of_availability, start_time_slot
+            ORDER BY availability_slot_id, date_of_availability, start_time_slot
         """,(test_center_id,))
 
         availabilities = cursor.fetchall()
@@ -251,7 +277,8 @@ def view_availabilities():
 @app.route('/delete_availability', methods=['POST'])
 def delete_availability():
     slot_id = request.form.get('slot_id')
-
+    print("**************SLOT ID************")
+    print(slot_id)
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -305,7 +332,141 @@ def my_registrations():
     # TODO
     return render_template('my_registrations.html')
 
+@app.route('/sponsors/contract')
+def sponsor_contract():
 
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        user_id = session.get("user_id")
+        cursor.execute("""
+                SELECT exam_sponsor_id FROM exam_sponsor
+                WHERE user_id = %s
+            """, (user_id,))
+        sponsor_id = cursor.fetchone()
+        sponsor_id = sponsor_id["exam_sponsor_id"]
+        print("***********ES ID*************")
+        print(sponsor_id)
+
+        cursor.execute("""
+            SELECT 
+                exam_sponsor_id, sponsor_contract_status, sponsor_start_date, sponsor_end_date, seat_commitment, rate_per_tester 
+            FROM sponsor_contract 
+            WHERE exam_sponsor_id = %s;
+        """,(sponsor_id,))
+
+        contract_details = cursor.fetchall()
+                        
+
+        cursor.close()
+        conn.close()
+        return render_template('sponsor_contract.html', contract_details = contract_details)
+
+    except:
+        return render_template('sponsor_contract.html')
+
+@app.route('/sponsors/exams')
+def view_sponsor_exams():    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        user_id = session.get("user_id")
+        cursor.execute("""
+                SELECT exam_sponsor_id FROM exam_sponsor
+                WHERE user_id = %s
+            """, (user_id,))
+        sponsor_id = cursor.fetchone()
+        sponsor_id = sponsor_id["exam_sponsor_id"]
+        print("***********ES ID*************")
+        print(sponsor_id)
+
+        cursor.execute("""
+            SELECT e.exam_id, e.exam_name, e.exam_duration, domain, exam_regs.reg_count AS reg_count, exam_schedule.schedule_count AS schedule_count
+                FROM exam e
+            LEFT JOIN (
+                SELECT exam_id, COUNT(*) AS reg_count
+                FROM registered_test_takers r
+                WHERE exam_sponsor_id = %s
+                AND appointment_status = "Scheduled"
+                OR appointment_status IS NULL                
+                GROUP BY exam_id) exam_regs
+                ON e.exam_id = exam_regs.exam_id
+                LEFT JOIN (
+                    SELECT exam_id, COUNT(*) AS schedule_count
+                    FROM scheduled_test_takers s
+                    WHERE exam_sponsor_id = %s AND appointment_status = 'Scheduled'
+                    GROUP BY exam_id) exam_schedule
+                ON e.exam_id = exam_schedule.exam_id
+                WHERE exam_sponsor_id = %s
+        """,(sponsor_id, sponsor_id, sponsor_id))
+
+        exams = cursor.fetchall()
+        print("CURSOR: ", exams)                 
+        cursor.close()
+        conn.close()
+        return render_template('view_sponsor_exams.html', exams = exams)
+
+    except:
+
+        return render_template('view_sponsor_exams.html')
+
+
+@app.route('/sponsors/add_exam',methods=['GET', 'POST'])
+def add_sponsor_exams():    
+
+    if request.method == 'POST':
+        exam_name = request.form.get('exam_name')     
+        exam_duration = request.form.get('exam_duration')
+        domain = request.form.get('domain')  
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+    
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        user_id = session.get("user_id")
+        cursor.execute("""
+                SELECT exam_sponsor_id FROM exam_sponsor
+                WHERE user_id = %s
+            """, (user_id,))
+        sponsor_id = cursor.fetchone()
+        sponsor_id = sponsor_id["exam_sponsor_id"]
+        print("***********ES ID*************")
+        print("HELLO: " , sponsor_id)
+
+         # ---- 1) Check if any exam already exists with this sponsor (best practice) ----
+        cursor.execute("""
+            SELECT exam_id FROM exam WHERE exam_name = %s AND exam_sponsor_id = %s
+        """, (exam_name,sponsor_id,))
+        existing = cursor.fetchone()
+        print("EXISTING: " ,existing)
+
+        if existing:
+            cursor.close()
+            conn.close()
+            flash("This exam already is registered.", "error")
+            return redirect(url_for("add_sponsor_exams"))
+      
+        # ---- 2) Insert new exam ----
+        cursor.execute("""
+            INSERT INTO exam(exam_sponsor_id, exam_name, exam_duration, domain )
+            VALUES
+            (%s, %s, %s, %s)
+        """, (sponsor_id, exam_name, exam_duration, domain,))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash("Exam added successfully! Click \"Add Another Exam\" to add another", "success")
+        return render_template('add_sponsor_exams.html')
+
+    except:
+
+        return render_template('add_sponsor_exams.html')
 
 
 if __name__ == '__main__':

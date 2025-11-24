@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+      <div class="topbar"> 
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+            <nav>
+                <a class="btn purpleb circle">Add Exam</a>
+                <a class="btn yellowb circle" href="{{ url_for('view_sponsor_exams') }}">View Exams</a>
+                <a class="btn yellowb circle" href="{{ url_for('sponsor_contract') }}">View Contract</a>
+                <a class="btn purpleb" href="{{ url_for('log_out') }}">Log Out</a>
+            
+            </nav>
+        </header>
+    </div>
+    <div class="container">
+      <main>
+        <div class="card cream_bg">
+            <h1 style="color:var(--blue)">Add An Exam</h1>
+
+            <form class="sponsor-exam-form blue_bg" method="POST" action="{{ url_for('add_sponsor_exams') }}">
+                <div class="sponsor-exam-form-grid">
+                        <label for="exam_name">Exam Name: </label>
+                        <input type="text" id="exam_name" name="exam_name">
+                        <label for="exam_duration">Exam Duration (in minutes): </label>
+                        <input type="text" id="exam_duration" name="exam_duration">
+                        <label for="domain">Exam Domain: </label>
+                        <input type="text" id="domain" name="domain">
+                </div>
+                <br>
+                <div class="flash-container" style="color:red">
+                    <pre>{{ debug_sql }}</pre>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <nav style="justify-content: center">
+                    <button class="btn yellowb circle" type="submit">Submit</button>
+                    <button class="btn purpleb" href="{{ url_for('add_sponsor_exams') }}">
+                        Add Another Exam
+                    </button>
+                </nav>
+            </form>
+        </div>
+    </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

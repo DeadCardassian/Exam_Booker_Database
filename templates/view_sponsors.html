@@ -25,14 +25,21 @@
     </div>
 
     <div class="container">
-        <h1 style="padding: 50px;font-size: 50px; color:var(--cream)">
-            Supercharge your career today.
-        </h1>
+        <main>
+            <div class="card cream_bg">
 
-        <nav style="padding-left: 50px">
-            <a class="btn yellowb long" href="{{ url_for('view_sponsors') }}">View our sponsors</a>
-            <a class="btn purpleb long" href="{{ url_for('upload_availabilities') }}">Upload Availabilities</a>
-        </nav>
+                <div class="header blue_bg">
+                    <h1 style="color:var(--cream)">Our Exam Sponsors</h1>
+                </div>
+
+                <p style="color:var(--grey)">
+                    {% for s in sponsors %}
+                        {{ s.sponsor_name }}<br>   
+                     {% endfor %}
+                </p>
+
+            </div>
+        </main>
 
         <footer>
              &copy; <span id="year"></span> ExamBooker
@@ -40,6 +47,7 @@
     </div>
 
     <script>
+        // gets current year
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>

@@ -4,65 +4,84 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Exam Booker</title>
-    <link rel="stylesheet" href="styles/styles_final.css">
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
 </head>
 <body>
       <div class="topbar"> 
         <header>
-            <a class="logo" href="home.html"><img src="images/logo.png" style="width:100px; height:100px; vertical-align:middle;">EXAM BOOKER</a>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
             <nav>
-                <a class="btn yellowb circle" href="sponsor_contract.html">View Contract</a>
-                <a class="btn yellowb circle" href="">View Exams</a>
-                <a class="btn purpleb circle" href="add_exam.html">Add Exam</a>
-
+                <a class="btn purpleb circle" href="{{ url_for('add_sponsor_exams') }}">Add Exam</a>
+                <a class="btn yellowb circle" href="{{ url_for('view_sponsor_exams') }}">View Exams</a>
+                <a class="btn yellowb circle" href="{{ url_for('sponsor_contract') }}">View Contract</a>
+                <a class="btn purpleb" href="{{ url_for('log_out') }}">Log Out</a>
+            
             </nav>
         </header>
     </div>
     <div class="container">
-        <main>                
+       <main>
             <div class="card cream_bg">
                 <div>
-                    <h1 style="color:var(--grey); text-align:center">Contract Details</h>
+                    <h1 style="color:var(--grey); text-align:center">Contract Details</h1>
                 </div>
+
                 <div style="padding-left: 20px">
-                    <table class="grey_txt">
+                    <table class="grey_txt contract">
                         <thead>
                             <tr>
                                 <th>Info Category</th>
-                                <th>Contract Detail</th>
+                                {% for d in contract_details %}
+                                    <th>Contract Detail</th>
+                                {% endfor %}
                             </tr>
-                        </thead>    
+                        </thead>
+
                         <tbody>
                             <tr>
-                            <td>Sponsor ID</td>
-                            <td>SELECT ...</td>
+                                <td>Exam Sponsor ID</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.exam_sponsor_id }}</td>
+                                {% endfor %}
                             </tr>
                             <tr>
-                            <td>Sponsor Name</td>
-                            <td>SELECT ...</td>
+                                <td>Contract Status</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.sponsor_contract_status }}</td>
+                                {% endfor %}                              
                             </tr>
                             <tr>
-                            <td>Contract Status</td>
-                            <td>SELECT ...</td>
-                            </tr>
-                            <td>Contract Start Date</td>
-                            <td>SELECT ...</td>
-                            </tr>
-                            <tr>
-                            <td>Contract End Date</td>
-                            <td>SELECT ...</td>
+                                <td>Contract Start Date</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.sponsor_start_date }}</td>
+                                {% endfor %}  
                             </tr>
                             <tr>
-                            <td>Seat Commitment</td>
-                            <td>SELECT ...</td>
+                                <td>Contract End Date</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.sponsor_end_date }}</td>
+                                {% endfor %}    
                             </tr>
                             <tr>
-                            <td>Rate</td>
-                            <td>SELECT ...</td>
+                                <td>Seat Commitment</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.seat_commitment }}</td>
+                                {% endfor %}    
+                            </tr>
+                            <tr>
+                                <td>Rate</td>
+                                {% for d in contract_details %}
+                                    <td>{{ d.rate_per_tester }}</td>
+                                {% endfor %}                              
                             </tr>
                         </tbody>
                     </table>
+                </div>
             </div>
         </main>
 
