@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+      <div class="topbar"> 
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+            <nav>
+                <a class="btn yellowb circle" href="{{ url_for('my_registrations') }}">My Registrations</a>
+                <a class="btn yellowb circle" href="{{ url_for('my_appointments') }}">My Appointments</a>
+                <a class="btn purpleb" href="{{ url_for('log_out') }}">Log Out</a>
+            
+            </nav>
+        </header>
+    </div>
+    <div>
+      <main>
+        <div class="card cream_bg">
+            <h1 style="color:var(--blue)">Exam Scheduling</h1>
+            <pre style="color: red">{{ debug_sql }}</pre>
+            <div class="yellow_bg schedule-exam-header">
+                <h2 style="color:var(--blue)">{{ exam_name }} </h2>
+                <h3 style="color:var(--blue)">{{ sponsor_name }} </h3>
+
+            </div>
+            <br>
+            <div class="availability_search">
+                <div class="purple_bg schedule-exam-header rounded">
+                <h3 style="color:var(--cream)">Available Appointments</h3>
+            </div>
+                <br>
+                <section style="padding-left: 30px">
+                <form method="POST" action="{{ url_for('city_search') }}">
+                    <input type="hidden" name="sponsor_name" value="{{ sponsor_name }}">
+                    <input type="hidden" name="exam_name" value="{{ exam_name }}">
+                    <input type="hidden" name="exam_registration_id" value="{{ exam_registration_id }}">
+                    <input type="hidden" name="test_taker_id" value="{{ test_taker_id }}">
+                    <p class="exam_reg_sponsor">Search for a city or country</p>
+                    <input list="cities" name="selection" class="city-input">
+                    <datalist id="cities">
+                    {% for city in cities %}
+                        <option value="{{ city.test_center_city }}">
+                    {% endfor %}
+                    </datalist>
+                    <button type="submit" class="btn yellowb circle" style="width: 10%">Search</button>
+                </form>
+                </section>
+                <br>
+                <br>
+                {% if availabilities %}
+                {% for a in availabilities %}
+                <section style="padding-left: 30px">
+                    <div>
+                        <h3 class="exam_reg_sponsor">{{ a.test_center_name }}</h2>
+                    </div>
+                        <p style="color:var(--grey); margin:0">{{ a.test_center_street }}</p>
+                        <p style="color:var(--grey); margin:0">{{ a.test_center_city }}, {{ a.test_center_state }} {{ a.test_center_zip_code }} </p>
+                        <p style="color:var(--grey); margin:0">{{ a.date_of_availability}}</p>
+                        <form method="POST" action="{{ url_for('book_appointment') }}">
+                            <input type="hidden" name="availability_slot_id" value="{{ a.availability_slot_id }}">
+                            <input type="hidden" name="exam_registration_id" value="{{ exam_registration_id }}">
+                            <button class="btn purpleb circle" type="submit" style="font-size: 18px">{{ a.start_time_slot }}</button>
+                        </form>
+                        <br>
+                        <br>
+                    </section>
+                {% endfor %}
+                {% else %}
+                    <p style="color: red; padding-left: 30px;"> No availability matches your search. Please search again. </p>
+                {% endif%}
+            </div>
+            <form>
+                
+            <nav style="justify-content: center">
+                <button class="btn blueb center circle">
+                    Select this appointment
+                </button>
+            </nav>
+            </form>
+            
+        </div>
+    </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

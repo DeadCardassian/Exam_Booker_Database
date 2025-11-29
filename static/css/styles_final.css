@@ -2,8 +2,10 @@
 :root{
     /*colors*/
     --purple:#462f5e;
+    --pale_purple: #dad5df;
     --cream:#f8f6eb;
     --yellow:#e1de91;
+    --pale_yellow: #f5f3c7;
     --grey:rgb(68, 67, 67);
     --blue: rgb(19, 30, 61);
     
@@ -209,6 +211,7 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 
 .card_100{
     width: 100%;
+    padding: 2%
 }
 .cream_bg{
     background:var(--cream);
@@ -220,6 +223,10 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 
 .blue_bg{
     background:var(--blue);
+}
+
+.purple_bg{
+    background:var(--purple);
 }
 
 
@@ -320,9 +327,9 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 }
 
 .login-form input {
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    font-size: 16px;
 }
 .sponsor-exam-form {
     gap: 16px;
@@ -350,9 +357,10 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
 
 .sponsor-exam-form input {
 
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 15px;
 }
 
 /* CONFIRMATION PAGES ========================== */
@@ -416,4 +424,97 @@ tr:nth-child(odd) {
 tr:nth-child(even) {
   background-color: var(--grey);
   color: var(--cream);
+}
+
+.exam_reg_header{
+    width: 100%;
+}
+
+.exam_reg_sponsor{
+    padding: 5px;
+    color: var(--grey);
+    margin: 0;
+}
+
+.exam_reg_exam_name{
+    padding: 5px;
+    color: var(--grey);
+    margin: 0;
+}
+
+.appointment_deets{
+    display: grid;
+    grid-template-rows: auto; grid-template-columns: auto auto auto;
+    gap: 20px;
+
+}
+
+.city-input {
+    width: 50%;       
+    padding: 7px;      
+    font-size: 16px;   
+    border-radius: 8px; 
+    border-color:var(-cream)
+    
+}
+
+.schedule-exam-header{
+    display:grid; grid-template-rows: auto auto; grid-template-columns: auto;
+    margin:0;
+    gap: 0px
+}
+
+.rounded{
+    border-radius: 20px;
+}
+
+.schedule-exam-header h2,
+.schedule-exam-header h3 {
+    margin: 0;
+    padding: 0;
+    padding-left: 15px;
+}
+
+.availability_search{
+    background-color: var(--pale_yellow);
+    border-color: var(--purple) !important;
+    border-width: 4px !important;
+    border-style: solid;
+    border-radius: 30px;
+}
+
+.exam_reg_grid{ 
+    display:grid;grid-template-columns: 1.5fr 3fr 2fr;
+    justify-items: left;  
+    gap: 16px;
+    color: var(--grey) !important;
+    font-size: 18px;
+}
+
+.exam_reg_grid select {
+    width: 80%;
+}
+
+.exam_reg_grid button {
+    justify-items: center; 
+    width: 80%;
+    font-size: 16px
+}
+
+.exam_reg_grid label{
+    color: var(--cream)
+}
+
+.payment_grid{ 
+    display:grid;grid-template-columns: 1fr 2fr 1fr 2fr ;
+    justify-items: left;  
+    gap: 16px;
+    font-size: 18px;
+}
+.payment_grid input{ 
+    width: 80%;
+    height: 100%
+}
+.payment_grid label{
+    color: var(--cream)
 }

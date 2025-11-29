@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Exam Booker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_final.css') }}">
+</head>
+<body>
+      <div class="topbar"> 
+        <header>
+            <a class="logo" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}"
+                     style="width:100px; height:100px; vertical-align:middle;">
+                EXAM BOOKER
+            </a>
+            <nav>
+                <a class="btn yellowb circle" href="{{ url_for('my_registrations') }}">My Registrations</a>
+                <a class="btn yellowb circle" href="{{ url_for('my_appointments') }}">My Appointments</a>
+                <a class="btn purpleb" href="{{ url_for('log_out') }}">Log Out</a>
+            
+            </nav>
+        </header>
+    </div>
+    <div class="container">
+      <main>
+        <div class="card cream_bg">
+            <div class="header blue_bg">
+                <h1 style="color:var(--cream)">My Appointments</h1>
+                <pre style="color: red">{{ debug_sql }}</pre>
+            </div>
+            <br>
+            {% if appointments %}
+                {% for a in appointments %}
+                <div>
+                    <div class="exam_reg_header yellow_bg">
+                        <h2 class="exam_reg_sponsor">{{ a.sponsor_name }}</h2>
+                    </div>
+                    <div>
+                        <h3 class="exam_reg_exam_name">{{ a.exam_name }}</h3>
+                        {% if a.appointment_status == "Scheduled" %}
+                        <div class="appointment_deets">
+                        <section>
+                        <div style="padding-left: 50px">
+                            <h3 class="exam_reg_sponsor">Date and Time</h3>
+                        </div>
+                        <div style="padding-left: 50px">
+                        <p style="color:var(--grey); margin:0">{{ a.date_of_availability}}</p>
+                        <p style="color:var(--grey); margin:0">{{ a.start_time_slot }} Local Time</p>
+                        <p style="color:var(--grey); margin:0">{{ a.exam_duration }} minutes</p>
+                        </div>
+                        </section>
+                        <section>
+                        <div>
+                            <h3 class="exam_reg_sponsor">Exam Location</h2>
+                        </div>
+                            <p style="color:var(--grey); margin:0">{{ a.test_center_name }}</p>
+                            <p style="color:var(--grey); margin:0">{{ a.test_center_street }}</p>
+                            <p style="color:var(--grey); margin:0">{{ a.test_center_city }},{{ a.test_center_state }} {{ a.test_center_zip_code }} </p>
+                        </section>
+                        <section style="align-self: center">
+                            <form method="POST" action="{{ url_for('schedule_exam') }}">
+                                <input type="hidden" name="sponsor_name" value="{{ a.sponsor_name }}">
+                                <input type="hidden" name="exam_name" value="{{ a.exam_name }}">
+                                <input type="hidden" name="exam_registration_id" value="{{ a.exam_registration_id }}">
+                                <button class="btn purpleb" style="font-size: 20px" type="submit">Reschedule Exam</button>
+                            </form>
+                            <br>
+                             <form method="POST" action="{{ url_for('cancel_appointment') }}">
+                                <input type="hidden" name="exam_registration_id" value="{{ a.exam_registration_id }}">
+                                <button class="btn purpleb" style="font-size: 20px" type="submit">&nbsp;&nbsp;&nbsp;&nbsp;Cancel Exam&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                            </form>
+
+                            {% else %}
+                            <a>
+                            <form method="POST" action="{{ url_for('schedule_exam') }}">
+                                <input type="hidden" name="sponsor_name" value="{{ a.sponsor_name }}">
+                                <input type="hidden" name="exam_name" value="{{ a.exam_name }}">
+                                <input type="hidden" name="exam_registration_id" value="{{ a.exam_registration_id }}">
+                                <button class="btn purpleb" style="font-size: 20px" type="submit">Reschedule Exam</button>
+                            </form>
+                            </a>
+                            <a style="color: red">⚠ Your exam was cancelled! Please reschedule it soon.</a>
+                        </section>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <br>
+                {% endfor %}
+            {% else %}
+             <div class="no-data">
+                    <p style="color: var(--grey)">You are not scheduled for any exams yet. Click "My Registrations" to select an exam to schedule.</p>
+            </div>
+            {% endif %}
+            <nav style="justify-content: center">
+                <a class="btn blueb long center" href="{{ url_for('my_registrations') }}">
+                    My Registrations
+                </a>
+            </nav>
+        </div>
+    </main>
+
+        <footer>
+             &copy; <span id="year"></span> ExamBooker 
+        </footer>
+    </div>
+
+    <script>
+        //gets current year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

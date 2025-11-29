@@ -17,7 +17,7 @@
             </a>
             <nav>
                 <a class="btn yellowb circle" href="{{ url_for('my_registrations') }}">My Registrations</a>
-                <a class="btn yellowb circle">My Appointments</a>
+                <a class="btn yellowb circle" href="{{ url_for('my_appointments') }}">My Appointments</a>
                 <a class="btn purpleb" href="{{ url_for('log_out') }}">Log Out</a>
             
             </nav>
@@ -26,11 +26,43 @@
     <div class="container">
       <main>
         <div class="card cream_bg">
-            <div class="header yellow_bg">
-                <h1 style="color:var(--grey)">My Registrations</h1>
+            <div class="header blue_bg">
+                <h1 style="color:var(--cream)">My Registrations</h1>
             </div>
+            <br>
+            {% if registrations %}
+                {% for r in registrations %}
+                <div>
+                    <div class="exam_reg_header yellow_bg">
+                        <h2 class="exam_reg_sponsor">{{ r.sponsor_name }}</h2>
+                    </div>
+                    <div>
+                        <h3 class="exam_reg_exam_name">{{ r.exam_name }}</h3>
+                        <br>
+                        {% if r.appointment_status == "Scheduled" %}
+                            <a class="btn purpleb" style="font-size: 18px" href="{{ url_for('my_appointments') }}">Appointment Details</a>
+                        {% else %}
+                            <a style="color: red">⚠ Your exam is not scheduled yet!</a>
+                            <a>                           
+                                <form method="POST" action="{{ url_for('schedule_exam') }}">
+                                    <input type="hidden" name="exam_registration_id" value="{{ r.exam_registration_id }}">
+                                    <button class="btn purpleb" type="submit" style="font-size: 18px">&nbsp;&nbsp;&nbsp;&nbsp;Schedule Exam&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                                </form>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <br>
+                {% endfor %}
+            {% else %}
+             <div class="no-data">
+                    <p style="color: var(--grey)">You are not registered for any exams yet. Click "Register for an Exam" to register.</p>
+            </div>
+            {% endif %}
             <nav style="justify-content: center">
-                <a class="btn purpleb long center">
+                
+                <a class="btn blueb long center" href="{{ url_for('new_exam_registration') }}"> 
                     Register for an Exam
                 </a>
             </nav>

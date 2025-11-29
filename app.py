@@ -1,5 +1,5 @@
 from flask import Flask, session, render_template, request, redirect, url_for, jsonify, flash
-from datetime import datetime
+from datetime import datetime, date
 import mysql.connector
 import bcrypt
 import csv
@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 app.secret_key = "my_se_key"  # allow flash
 
-# connect db
+#----------------- DB CONNECTION
 def get_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -19,6 +19,7 @@ def get_connection():
         database="exam_booker"    
     )
 
+#----------------- PUBLIC PAGES
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -48,8 +49,7 @@ def view_sponsors():
     except:
         return render_template('view_sponsors.html', sponsors="No Sponsors to View")
 
-
-
+#----------------- ALL USERS: Log in, Log out, Create User, Personal Information
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -155,8 +155,6 @@ def create_user():
         cursor.close()
         conn.close()
 
-        # flash("Registration successful!", "success")
-
         if user_type == "TT":
             return redirect(url_for("personal_information", user_id=session.get("user_id"), user_type=session.get("user_type")))
         elif user_type == "TC":
@@ -175,7 +173,6 @@ def personal_information():
 
     if request.method == 'POST':
         if user_type == "TT":
-            print("in test taker personal_information block")
             first_name = request.form.get('first_name')     
             last_name = request.form.get('last_name')
             phone_number = request.form.get('phone_number') 
@@ -270,6 +267,478 @@ def personal_information():
 
     return render_template('personal_information.html', user_id=user_id, user_type=user_type)
 
+#----------------- TEST TAKER: My Registrations, My Appointments, New Exam Reg, Schedule Exam, Cancel Exam, Reschedule Exam
+@app.route('/my_registrations')
+def my_registrations():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    user_id = session.get("user_id")
+    try:
+        cursor.execute("""
+            SELECT test_taker_id FROM test_taker WHERE user_id = %s
+        """, (user_id,))
+
+        test_taker_id = cursor.fetchone()
+        test_taker_id = test_taker_id["test_taker_id"]
+        print("******** TT ID *******")
+        print(test_taker_id)
+        cursor.execute("""
+        SELECT sponsor_name, exam_sponsor_id, exam_name, appointment_status, exam_registration_id
+        FROM (
+            SELECT 
+                s.sponsor_name,
+                r.exam_sponsor_id,
+                r.exam_name,
+                r.appointment_status,
+                r.exam_registration_id,
+                ROW_NUMBER() OVER (
+                    PARTITION BY r.exam_registration_id 
+                    ORDER BY r.appointment_id DESC 
+                ) AS rn
+            FROM registered_test_takers r
+            INNER JOIN exam_sponsor s
+                ON s.exam_sponsor_id = r.exam_sponsor_id
+            WHERE r.test_taker_id = %s
+        ) AS ranked
+        WHERE rn = 1
+        ORDER BY sponsor_name, exam_name;
+        """, (test_taker_id, ))
+
+        # cursor.execute("""
+        #     SELECT s.sponsor_name, r.exam_sponsor_id, r.exam_name, r.appointment_status, r.exam_registration_id FROM registered_test_takers r
+        #     INNER JOIN exam_sponsor s
+        #     ON s.exam_sponsor_id = r.exam_sponsor_id                       
+        #     WHERE test_taker_id = %s
+        #     ORDER BY s.sponsor_name, r.exam_name
+        # """, (test_taker_id, ))
+
+        registrations = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return render_template("my_registrations.html", registrations=registrations)
+    except:     
+        return render_template("my_registrations.html")    
+
+
+@app.route('/my_appointments')
+def my_appointments():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    user_id = session.get("user_id")
+    try:
+        cursor.execute("""
+            SELECT test_taker_id FROM test_taker WHERE user_id = %s
+        """, (user_id,))
+
+        test_taker_id = cursor.fetchone()
+        test_taker_id = test_taker_id["test_taker_id"]
+        print("******** TT ID *******")
+        print(test_taker_id)
+
+        cursor.execute("""
+        WITH ranked AS (
+            SELECT
+                s.sponsor_name,e.exam_name,a.exam_registration_id,a.exam_duration,a.appointment_status,
+                a.accomodations,a.date_of_availability,a.start_time_slot,a.test_center_name,
+                a.test_center_street,a.test_center_city,a.test_center_state,a.test_center_country,
+                a.test_center_zip_code,
+                ROW_NUMBER() OVER (
+                    PARTITION BY a.exam_registration_id
+                    ORDER BY a.appointment_id DESC
+                ) AS row_num
+            FROM scheduled_test_takers a
+            LEFT JOIN exam_sponsor s
+                ON a.exam_sponsor_id = s.exam_sponsor_id
+            LEFT JOIN exam e
+                ON a.exam_id = e.exam_id
+            WHERE a.test_taker_id = %s
+        )
+        SELECT *
+        FROM ranked
+        WHERE row_num = 1
+        ORDER BY sponsor_name, exam_name;
+        """, (test_taker_id, ))
+
+
+        appointments = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return render_template("my_appointments.html", appointments=appointments)
+    except:     
+        return render_template("my_appointments.html")   
+
+@app.route('/schedule_exam', methods=['POST', 'GET'])
+def schedule_exam():
+    exam_registration_id = request.form.get("exam_registration_id")
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT test_center_city
+        FROM (
+            SELECT DISTINCT test_center_city FROM test_centers_with_availability 
+            UNION ALL 
+            SELECT DISTINCT test_center_country FROM test_centers_with_availability
+        ) AS combined 
+        ORDER BY test_center_city
+    """)
+    cities = cursor.fetchall()
+
+    user_id = session.get("user_id")
+    cursor.execute("""
+        SELECT test_taker_id FROM test_taker WHERE user_id = %s
+    """, (user_id,))
+    test_taker_id = cursor.fetchone()
+    cursor.fetchall()
+    test_taker_id = test_taker_id["test_taker_id"]
+
+    cursor.execute("""
+        SELECT r.exam_registration_id, s.sponsor_name, r.exam_name
+        FROM registered_test_takers r
+        LEFT JOIN exam_sponsor s
+        ON r.exam_sponsor_id = s.exam_sponsor_id
+        WHERE r.exam_registration_id = %s
+    """, (exam_registration_id, ))
+
+    registration = cursor.fetchone()
+    cursor.fetchall()
+
+    sponsor_name = registration["sponsor_name"]
+    exam_name = registration["exam_name"]
+
+    cursor.execute("""
+    SELECT *
+    FROM test_centers_with_availability tca_view
+    WHERE tca_view.slot_duration > (
+        SELECT exam_duration
+        FROM (
+            SELECT
+                reg_view.exam_duration,
+                ROW_NUMBER() OVER (
+                    PARTITION BY reg_view.exam_registration_id
+                    ORDER BY reg_view.appointment_id DESC
+                ) AS rn
+            FROM registered_test_takers reg_view
+            WHERE reg_view.test_taker_id = %s
+            AND reg_view.exam_registration_id = %s
+        ) AS ranked
+        WHERE rn = 1
+    )
+    AND (tca_view.seat_capacity - tca_view.scheduled_count) > 0;
+""", (test_taker_id, exam_registration_id,))
+
+    availabilities = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("schedule_exam.html", cities=cities, sponsor_name=sponsor_name,exam_name=exam_name,availabilities=availabilities,test_taker_id=test_taker_id,exam_registration_id=exam_registration_id)
+
+@app.route('/schedule_exam/search', methods=['POST', 'GET'])
+def city_search():
+    selection = request.form.get('selection')
+    sponsor_name = request.form.get("sponsor_name")
+    exam_name = request.form.get("exam_name")
+    exam_registration_id = request.form.get("exam_registration_id")
+    user_id = session.get("user_id")
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT test_taker_id FROM test_taker WHERE user_id = %s
+    """, (user_id,))
+
+    test_taker_id = cursor.fetchone()
+    cursor.fetchall()
+    test_taker_id = test_taker_id["test_taker_id"]
+
+    cursor.execute("""
+        SELECT test_center_city
+        FROM (
+            SELECT DISTINCT test_center_city FROM test_centers_with_availability 
+            UNION ALL 
+            SELECT DISTINCT test_center_country FROM test_centers_with_availability
+        ) AS combined 
+        ORDER BY test_center_city
+    """)
+
+    cities = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT *
+        FROM test_centers_with_availability tca_view
+        WHERE tca_view.slot_duration > (
+            SELECT exam_duration
+            FROM (
+                SELECT
+                    reg_view.exam_duration,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY reg_view.exam_registration_id
+                        ORDER BY reg_view.appointment_id DESC
+                    ) AS rn
+                FROM registered_test_takers reg_view
+                WHERE reg_view.test_taker_id = %s
+                AND reg_view.exam_registration_id = %s
+            ) AS ranked
+            WHERE rn = 1
+        )
+        AND (tca_view.seat_capacity - tca_view.scheduled_count) > 0
+        AND tca_view.test_center_city = %s
+        OR tca_view.test_center_state = %s
+        OR tca_view.test_center_country = %s
+        OR tca_view.test_center_zip_code = %s;
+    """, (test_taker_id, exam_registration_id, selection, selection, selection, selection ))
+    
+    availabilities = cursor.fetchall()
+
+
+    return render_template("schedule_exam.html", sponsor_name=sponsor_name, exam_name = exam_name, cities=cities, availabilities= availabilities, test_taker_id = test_taker_id, exam_registration_id = exam_registration_id)
+
+@app.route('/book_appointment', methods=['POST', 'GET'])
+def book_appointment():
+    availability_slot_id = request.form.get("availability_slot_id")
+    exam_registration_id = request.form.get("exam_registration_id")
+    print("******** EXAM REG ID *******")
+    print(exam_registration_id)
+    user_id = session.get("user_id")
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT test_taker_id FROM test_taker WHERE user_id = %s
+    """, (user_id,))
+
+    test_taker_id = cursor.fetchone()
+    test_taker_id = test_taker_id["test_taker_id"]
+
+    cursor.execute("""
+        SELECT appointment_status
+        FROM (
+            SELECT 
+                r.appointment_status,
+                ROW_NUMBER() OVER (
+                    PARTITION BY r.exam_registration_id
+                    ORDER BY r.appointment_id DESC
+                ) AS rn
+            FROM registered_test_takers r
+            WHERE r.exam_registration_id = %s
+        ) AS ranked
+        WHERE rn = 1;
+    """, (exam_registration_id,))
+
+    appointment_status = cursor.fetchone()
+    appointment_status = appointment_status["appointment_status"] if appointment_status else None
+
+    if appointment_status == "Scheduled":
+        cursor.execute("""
+            UPDATE appointment
+            SET appointment_status = 'Cancelled'
+            WHERE exam_registration_id = %s;
+        """, (exam_registration_id, ))
+
+
+    cursor.execute("""
+        INSERT INTO appointment (exam_registration_id,
+        appointment_status, availability_slot_id)
+        VALUES
+        (%s, 'Scheduled', %s);
+    """, (exam_registration_id,availability_slot_id, ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for('my_appointments'))
+
+
+@app.route('/cancel_appointment', methods=['POST', 'GET'])
+def cancel_appointment():
+    availability_slot_id = request.form.get("availability_slot_id")
+    exam_registration_id = request.form.get("exam_registration_id")
+    user_id = session.get("user_id")
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT test_taker_id FROM test_taker WHERE user_id = %s
+    """, (user_id,))
+
+    test_taker_id = cursor.fetchone()
+    test_taker_id = test_taker_id["test_taker_id"]
+
+    cursor.execute("""
+        UPDATE appointment
+        SET appointment_status = 'Cancelled'
+        WHERE exam_registration_id = %s;
+    """, (exam_registration_id, ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for('my_appointments'))
+
+@app.route('/new_exam_registration', methods=['GET', 'POST'])
+def new_exam_registration():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT DISTINCT sponsor_name, exam_sponsor_id FROM sponsor_exam_details ORDER BY sponsor_name;")
+    sponsors = cursor.fetchall()
+
+    sponsor_selection = None
+    exam_selection = None
+    exams = []
+
+    if request.method == 'POST':
+        sponsor_selection = request.form.get('sponsor_name')
+        exam_selection = request.form.get('exam_name')
+
+        cursor.execute("""
+            SELECT exam_name FROM sponsor_exam_details 
+            WHERE sponsor_name = %s
+            ORDER BY exam_name
+        """, (sponsor_selection,))
+        exams = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template(
+        "new_exam_registration.html",
+        sponsors=sponsors,
+        exams=exams,
+        sponsor_name=sponsor_selection,
+        exam_name=exam_selection
+    )
+
+@app.route('/create_registration', methods=['POST', 'GET'])
+def create_registration():
+    exam_name = request.form.get("exam_name")
+    sponsor_name = request.form.get("sponsor_name")
+    user_id = session.get("user_id")
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT test_taker_id FROM test_taker WHERE user_id = %s
+    """, (user_id,))
+
+    test_taker_id = cursor.fetchone()
+    test_taker_id = test_taker_id["test_taker_id"]
+
+    cursor.execute("""
+        SELECT exam_id FROM sponsor_exam_details
+        WHERE exam_name = %s
+        AND sponsor_name = %s
+    """, (exam_name, sponsor_name, ))
+
+    exam_id = cursor.fetchone()
+    exam_id = exam_id["exam_id"]
+
+    cursor.execute("""
+    SELECT invoice_number FROM exam_registration
+    ORDER BY exam_registration_id DESC
+    LIMIT 1
+    """)
+
+    latest_invoice = cursor.fetchone()
+    latest_invoice = latest_invoice["invoice_number"]
+    
+    latest_invoice = latest_invoice.split("-")[1]
+    try:
+        latest_invoice = int(latest_invoice)
+    except ValueError:
+        print("error converting invoice number to int")
+
+    invoice_number = latest_invoice + 1
+    invoice_number = f"INV-{invoice_number:0{6}d}"
+    print("********* invoice_number ***********")
+    print(invoice_number)
+
+    cost = 100;
+
+    cursor.execute("""
+        INSERT INTO exam_registration(exam_id, test_taker_id, invoice_number,
+        registration_date, amount_paid)
+        VALUES (%s,%s,%s,CURDATE(),%s);
+    """, (exam_id, test_taker_id, invoice_number, cost ))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for('my_registrations'))
+
+#----------------- TEST CENTER: View Availability, Delete Availability, Upload Availability, View Contract
+@app.route('/view_availabilities')
+def view_availabilities():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        user_id = session.get("user_id")
+        cursor.execute("""
+                SELECT test_center_id FROM test_center
+                WHERE user_id = %s
+            """, (user_id,))
+        test_center_id = cursor.fetchone()
+        test_center_id = test_center_id["test_center_id"]
+
+        cursor.execute("""
+            SELECT 
+                availability_slot_id,
+                date_of_availability,
+                start_time_slot,
+                end_time_slot,
+                seat_capacity,
+                scheduled_count
+            FROM test_centers_with_availability
+            WHERE test_center_id = %s
+            ORDER BY availability_slot_id, date_of_availability, start_time_slot
+        """,(test_center_id,))
+
+        availabilities = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('view_availabilities.html', availabilities=availabilities)
+
+    except:
+        return render_template('view_availabilities.html')
+    
+
+@app.route('/delete_availability', methods=['POST'])
+def delete_availability():
+    slot_id = request.form.get('slot_id')
+    print("**************SLOT ID************")
+    print(slot_id)
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM test_center_availability
+        WHERE availability_slot_id = %s
+    """, (slot_id,))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    flash("Availability slot deleted.", "success")
+    return redirect(url_for('view_availabilities'))
+
 
 @app.route('/availabilities/upload', methods=['GET', 'POST'])
 def upload_availabilities():
@@ -333,66 +802,6 @@ def upload_availabilities():
     return render_template('upload_availabilities.html')
 
 
-@app.route('/view_availabilities')
-def view_availabilities():
-    try:
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
-
-        user_id = session.get("user_id")
-        cursor.execute("""
-                SELECT test_center_id FROM test_center
-                WHERE user_id = %s
-            """, (user_id,))
-        test_center_id = cursor.fetchone()
-        test_center_id = test_center_id["test_center_id"]
-
-        cursor.execute("""
-            SELECT 
-                availability_slot_id,
-                date_of_availability,
-                start_time_slot,
-                end_time_slot,
-                seat_capacity,
-                scheduled_count
-            FROM test_centers_with_availability
-            WHERE test_center_id = %s
-            ORDER BY availability_slot_id, date_of_availability, start_time_slot
-        """,(test_center_id,))
-
-        availabilities = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return render_template('view_availabilities.html', availabilities=availabilities)
-
-    except:
-        return render_template('view_availabilities.html')
-
-
-
-
-
-@app.route('/delete_availability', methods=['POST'])
-def delete_availability():
-    slot_id = request.form.get('slot_id')
-    print("**************SLOT ID************")
-    print(slot_id)
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        DELETE FROM test_center_availability
-        WHERE availability_slot_id = %s
-    """, (slot_id,))
-
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-    flash("Availability slot deleted.", "success")
-    return redirect(url_for('view_availabilities'))
-
-
 @app.route('/centers/contract')
 def center_contract():
 
@@ -424,46 +833,7 @@ def center_contract():
     except:
         return render_template('center_contract.html')
 
-
-@app.route('/my_registrations')
-def my_registrations():
-    # TODO
-    return render_template('my_registrations.html')
-
-@app.route('/sponsors/contract')
-def sponsor_contract():
-
-    try:
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
-
-        user_id = session.get("user_id")
-        cursor.execute("""
-                SELECT exam_sponsor_id FROM exam_sponsor
-                WHERE user_id = %s
-            """, (user_id,))
-        sponsor_id = cursor.fetchone()
-        sponsor_id = sponsor_id["exam_sponsor_id"]
-        print("***********ES ID*************")
-        print(sponsor_id)
-
-        cursor.execute("""
-            SELECT 
-                exam_sponsor_id, sponsor_contract_status, sponsor_start_date, sponsor_end_date, seat_commitment, rate_per_tester 
-            FROM sponsor_contract 
-            WHERE exam_sponsor_id = %s;
-        """,(sponsor_id,))
-
-        contract_details = cursor.fetchall()
-                        
-
-        cursor.close()
-        conn.close()
-        return render_template('sponsor_contract.html', contract_details = contract_details)
-
-    except:
-        return render_template('sponsor_contract.html')
-
+#----------------- EXAM SPONSOR: View Exams, Add Exam, View Contract
 @app.route('/sponsors/exams')
 def view_sponsor_exams():    
     try:
@@ -565,6 +935,46 @@ def add_sponsor_exams():
 
         return render_template('add_sponsor_exams.html')
 
+@app.route('/sponsors/contract')
+def sponsor_contract():
+
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        user_id = session.get("user_id")
+        cursor.execute("""
+                SELECT exam_sponsor_id FROM exam_sponsor
+                WHERE user_id = %s
+            """, (user_id,))
+        sponsor_id = cursor.fetchone()
+        sponsor_id = sponsor_id["exam_sponsor_id"]
+        print("***********ES ID*************")
+        print(sponsor_id)
+
+        cursor.execute("""
+            SELECT 
+                exam_sponsor_id, sponsor_contract_status, sponsor_start_date, sponsor_end_date, seat_commitment, rate_per_tester 
+            FROM sponsor_contract 
+            WHERE exam_sponsor_id = %s;
+        """,(sponsor_id,))
+
+        contract_details = cursor.fetchall()
+                        
+
+        cursor.close()
+        conn.close()
+        return render_template('sponsor_contract.html', contract_details = contract_details)
+
+    except:
+        return render_template('sponsor_contract.html')
+    
+
+#----------------- OTHER
+
+@app.template_filter("friendly_date")
+def friendly_date(value):
+    return datetime.strptime(value, "%Y-%m-%d").strftime("%B %d, %Y").replace(" 0", " ")
 
 if __name__ == '__main__':
     app.run(debug=True)
