@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 24, 2025 at 07:10 AM
+-- Generation Time: Nov 29, 2025 at 07:25 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -63,7 +63,16 @@ INSERT INTO `appointment` (`appointment_id`, `exam_registration_id`, `accomodati
 (27, 6, NULL, 'Scheduled', 1, 27),
 (28, 10, NULL, 'Scheduled', 2, 27),
 (29, 14, NULL, 'Scheduled', 3, 27),
-(30, 11, NULL, 'Scheduled', 4, 27);
+(30, 11, NULL, 'Scheduled', 4, 27),
+(32, 20, NULL, 'Cancelled', 1, 63),
+(33, 19, NULL, 'Cancelled', NULL, 72),
+(36, 18, NULL, 'Scheduled', NULL, 47),
+(37, 19, NULL, 'Cancelled', NULL, 1),
+(38, 19, NULL, 'Cancelled', NULL, 4),
+(39, 20, NULL, 'Cancelled', NULL, 4),
+(40, 20, NULL, 'Cancelled', NULL, 5),
+(41, 20, NULL, 'Scheduled', NULL, 9),
+(42, 19, NULL, 'Scheduled', NULL, 30);
 
 --
 -- Triggers `appointment`
@@ -140,11 +149,14 @@ INSERT INTO `exam` (`exam_id`, `exam_sponsor_id`, `exam_name`, `exam_duration`, 
 (31, 15, 'Wind Turbine Maintenance Certification', 150, 'Renewable Energy'),
 (32, 15, 'Energy Storage System Specialist', 90, 'Energy Engineering'),
 (33, 1, 'Risk Management Professional', 150, 'Risk Management'),
-(34, 17, 'Test Exam 1', 60, 'Testing'),
-(35, 17, 'Test Exam 2', 60, 'Testing'),
-(36, 17, 'Test Exam 3', 60, 'Testing'),
+(34, 17, 'Sustainability and Climate Risk Certificate', 60, 'Testing'),
+(35, 17, 'Energy Risk Professional', 60, 'Testing'),
+(36, 17, 'Financial Risk Manager', 60, 'Testing'),
 (37, 17, 'Test Exam 4', 60, 'Testing'),
-(38, 17, 'Test Exam 5', 60, 'Testing');
+(38, 17, 'Test Exam 5', 60, 'Testing'),
+(39, 17, 'Test Exam 6', 90, 'Testing'),
+(40, 17, 'Test Exam 7', 60, 'Testing'),
+(41, 17, 'Test Exam 8', 60, 'Testing');
 
 -- --------------------------------------------------------
 
@@ -182,7 +194,11 @@ INSERT INTO `exam_registration` (`exam_registration_id`, `exam_id`, `test_taker_
 (14, 35, 14, 'INV-000014', '2025-09-02', 380.00),
 (15, 34, 15, 'INV-000015', '2025-09-27', 825.00),
 (16, 6, 2, 'INV-000016', '2025-02-04', 225.00),
-(17, 36, 3, 'INV-000017', '2025-02-16', 310.00);
+(17, 36, 3, 'INV-000017', '2025-02-16', 310.00),
+(18, 36, 41, 'INV-000018', '2025-02-16', 310.00),
+(19, 36, 45, 'INV-000019', '2025-02-16', 310.00),
+(20, 35, 45, 'INV-000020', '2025-02-16', 310.00),
+(21, 19, 45, 'INV-000021', '2025-11-29', 100.00);
 
 -- --------------------------------------------------------
 
@@ -216,7 +232,8 @@ INSERT INTO `exam_sponsor` (`exam_sponsor_id`, `sponsor_name`, `user_id`) VALUES
 (13, 'Human Resources Credentialing Group', 53),
 (14, 'Data Analytics and AI Certification Institute', 54),
 (15, 'Renewable Energy Training Alliance', 55),
-(17, 'test', 65);
+(17, 'Global Association of Risk Professionals', 65),
+(18, 'sadgfadfasdf', 85);
 
 -- --------------------------------------------------------
 
@@ -232,6 +249,7 @@ CREATE TABLE `registered_test_takers` (
 ,`exam_id` int(11)
 ,`exam_sponsor_id` int(11)
 ,`appointment_status` enum('Scheduled','Cancelled')
+,`appointment_id` int(11)
 );
 
 -- --------------------------------------------------------
@@ -353,7 +371,10 @@ INSERT INTO `test_center` (`test_center_id`, `test_center_name`, `test_center_st
 (10, 'Bluesky Center', '400 Aviation Way', 'Dallas', 'TX', 'USA', '75235', 59),
 (11, 'Peak Performance', '85 Mountain View Ave', 'Salt Lake City', 'UT', 'USA', '84101', 59),
 (12, 'Test Test', '123 Main Street', 'New York', 'NY', 'USA', '10021', 59),
-(13, 'test', '123 main st', 'new york', 'ny', 'usa', '10031', 63);
+(13, 'test', '123 main st', 'new york', 'ny', 'usa', '10031', 63),
+(14, 'asdfasdfasd', 'asdfasdf', 'asdfasdf', 'asdfasdf', 'asdfasdf', '435424', 84),
+(15, 'asdfasdfasd', 'asdfasdf', 'asdfasdf', 'asdfasdf', 'asdfasdf', '435424', 87),
+(16, 'Testing Test Center', 'asdfasdf', 'asdfasdf', 'asdfasdf', 'asdfasdf', '435424', 90);
 
 -- --------------------------------------------------------
 
@@ -407,7 +428,7 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (6, 1, '2025-12-11', '09:00:00', '10:00:00', 5, 3),
 (7, 1, '2025-12-11', '10:00:00', '11:00:00', 5, 0),
 (8, 1, '2025-12-11', '11:00:00', '12:00:00', 5, 0),
-(9, 1, '2025-12-11', '12:00:00', '16:00:00', 5, 0),
+(9, 1, '2025-12-11', '12:00:00', '16:00:00', 5, 1),
 (10, 1, '2025-12-11', '16:00:00', '18:00:00', 5, 0),
 (11, 1, '2025-12-12', '09:00:00', '13:00:00', 5, 3),
 (12, 2, '2025-12-05', '09:00:00', '11:00:00', 4, 0),
@@ -427,7 +448,7 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (27, 6, '2026-01-10', '09:00:00', '12:00:00', 4, 4),
 (28, 7, '2025-12-20', '09:00:00', '10:00:00', 4, 0),
 (29, 7, '2025-12-20', '11:15:00', '12:15:00', 4, 1),
-(30, 7, '2026-01-04', '09:00:00', '12:30:00', 5, 0),
+(30, 7, '2026-01-04', '09:00:00', '12:30:00', 5, 1),
 (31, 8, '2025-12-22', '08:00:00', '09:00:00', 3, 0),
 (32, 8, '2025-12-22', '10:15:00', '13:15:00', 4, 0),
 (33, 8, '2026-01-07', '09:00:00', '11:00:00', 5, 0),
@@ -444,7 +465,7 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (44, 7, '2025-12-20', '10:00:00', '11:00:00', 4, 0),
 (45, 11, '2025-12-31', '10:00:00', '11:00:00', 4, 0),
 (46, 9, '2025-12-28', '10:00:00', '11:00:00', 4, 0),
-(47, 3, '2025-12-10', '09:00:00', '10:00:00', 3, 0),
+(47, 3, '2025-12-10', '09:00:00', '10:00:00', 3, 1),
 (48, 7, '2025-12-20', '12:15:00', '13:15:00', 4, 0),
 (50, 1, '2026-01-03', '18:00:00', '19:30:00', 2, 0),
 (51, 13, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
@@ -454,7 +475,18 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (57, 13, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
 (58, 13, '2025-02-02', '14:00:00', '15:00:00', 1, 0),
 (60, 13, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
-(61, 13, '2025-02-02', '14:00:00', '15:00:00', 1, 0);
+(63, 13, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
+(64, 13, '2025-02-02', '14:00:00', '15:00:00', 1, 0),
+(66, 13, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
+(67, 13, '2025-02-02', '14:00:00', '15:00:00', 1, 0),
+(69, 13, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
+(70, 13, '2025-02-02', '14:00:00', '15:00:00', 1, 0),
+(72, 16, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
+(73, 16, '2025-02-02', '14:00:00', '15:00:00', 1, 0),
+(74, 16, '2025-02-03', '15:00:00', '16:00:00', 1, 0),
+(75, 13, '2025-02-01', '13:00:00', '14:00:00', 1, 0),
+(76, 13, '2025-02-02', '14:00:00', '15:00:00', 1, 0),
+(77, 13, '2025-02-03', '15:00:00', '16:00:00', 1, 0);
 
 --
 -- Triggers `test_center_availability`
@@ -557,7 +589,12 @@ INSERT INTO `test_taker` (`test_taker_id`, `first_name`, `last_name`, `phone_num
 (27, 'Grace', 'Lewis', '111-234-5678', '100 Garden Path', 'Nashville', 'TN', 'USA', '37203', 38),
 (28, 'Henry', 'Cho', '222-345-6789', '190 Lakewood St', 'Raleigh', 'NC', 'USA', '27601', 39),
 (29, 'Irene', 'Park', '333-456-7890', '27 Highland Ave', 'Milwaukee', 'WI', 'USA', '53202', 40),
-(30, 'Jason', 'Foster', '444-567-8901', '46 Clover Rd', 'Louisville', 'KY', 'USA', '40202', 41);
+(30, 'Jason', 'Foster', '444-567-8901', '46 Clover Rd', 'Louisville', 'KY', 'USA', '40202', 41),
+(41, 'Tanya', 'Thomas', '435456', '123 main st', NULL, 'NY', 'USA', '123456', 83),
+(42, 'Khushi', 'Thomas', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 86),
+(43, 'Elyse', 'Monyette', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 88),
+(44, 'Cleopatra', 'DeMarco', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 89),
+(45, 'Cleopatra', 'Thomas', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 66);
 
 -- --------------------------------------------------------
 
@@ -639,7 +676,22 @@ INSERT INTO `user` (`user_id`, `user_email`, `user_password_h`, `user_type`) VAL
 (62, 'a@example.com', '$2b$12$SOXOVaQOlbMtx6bhifAJTeuw1sFs3RCzZiImjW4rbOJPvZGLK8Q8S', 'TT'),
 (63, 'tc@example.com', '$2b$12$qnQIqWcVCdUYVh8CaE2n9O28ng231eZitxD5gbGqbA9usLwQt8T6.', 'TC'),
 (65, 'es@example.com', '$2b$12$yLh9YV2m.RML3Erfd6uO4.1qischSnfLF0PNmYkR/Jsq5Fu/yL6Ya', 'ES'),
-(66, 'tt@example.com', '$2b$12$lv1Rqy4/IZIQKI95Y5CjHO/E.GXyWwy0T76Oy/w8YnJ3GjCPajQku', 'TT');
+(66, 'tt@example.com', '$2b$12$lv1Rqy4/IZIQKI95Y5CjHO/E.GXyWwy0T76Oy/w8YnJ3GjCPajQku', 'TT'),
+(67, 'es1@example.com', '$2b$12$QJYHRiYhBAVwn5WkxDB/b.MZ70PR8ANzIYpYkkJf7DDdVzQ5TOZyu', 'ES'),
+(68, 'tt1@example.com', '$2b$12$8ie5ftPp2stqv8.rRhy5OOS.rgDPd7m4sIxqT1T7VpQ0ZHm.D9/Ue', 'TT'),
+(69, 'tt2@example.com', '$2b$12$VPJpeSIuFAWqKMDaS8gFl.9WGpQwnAlPRAUwkAnSI9x1SlH254COS', 'TT'),
+(70, 'tt3@example.com', '$2b$12$Uq4SwW268ZpmoxS2P6/xDuISi5EsKeSHLdZ8eSbAfIIvD1zon6E4.', 'TT'),
+(71, 'tt4@example.com', '$2b$12$BXswMVeZdnawWk04/R4KvOUiB3ckDlZuhJJj9Unrlh0Xesq5uh0em', 'TT'),
+(72, 'tt5@example.com', '$2b$12$UMFGEGDiCGedNNeAhqESP.mA8hdLL4x09Uy5w2IOxHAEy3lBw/Ryi', 'TT'),
+(83, 'tt11@example.com', '$2b$12$Qw4psEWbOUfp2evySjiNYeh3mqFRZvL0pHNoYEiKvPXYo5RE/MgZG', 'TT'),
+(84, 'tc1@example.com', '$2b$12$UOuofPt8lF13k51I4fXDZ.3C.SEzNKk3SKqOD0i4.cFeJCudJ36Rq', 'TC'),
+(85, 'es2@example.com', '$2b$12$IU/LxyQEOzD765AQZ3/smOytJtDEEY67ZSy11TxNfhaTAlh5wm5Na', 'ES'),
+(86, 'tt13@example.com', '$2b$12$UEPT1sCcMaK1nPAcA8oV0uPLv6iFi.3sRfCwSD7QsCgehGZCrswI2', 'TT'),
+(87, 'tc4@example.com', '$2b$12$1eP.VaAenYMIYh9MajE8oebQR2orhE8MmyMRG4A0Lzr/upFF4Z/ry', 'TC'),
+(88, 'tt15@example.com', '$2b$12$UCJtUgOQdDxmwR7kbmCQe.MDYPUOSKTgiXr5jEjCxiFWl0.badWnu', 'TT'),
+(89, 'tt16@example.com', '$2b$12$jtnSIH.UPYum8XsOcOtaXenD6luVY69q1cWo3TFDsnOtQdaxWHRAq', 'TT'),
+(90, 'tc5@example.com', '$2b$12$IBJBFBhaJaX5oOZ7GvAa9.XrwTj7MvLy7H5c7IBM7F3GNqDMXi0Rq', 'TC'),
+(91, 'tt17@example.com', '$2b$12$.9Ocq/7L4VP3C/T.jmhrRuBZO5EY/wAaSOzllZcZt/3JwGRUtYiuy', 'TT');
 
 -- --------------------------------------------------------
 
@@ -648,7 +700,7 @@ INSERT INTO `user` (`user_id`, `user_email`, `user_password_h`, `user_type`) VAL
 --
 DROP TABLE IF EXISTS `registered_test_takers`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `registered_test_takers`  AS SELECT `r`.`test_taker_id` AS `test_taker_id`, `r`.`exam_registration_id` AS `exam_registration_id`, `e`.`exam_name` AS `exam_name`, `e`.`exam_duration` AS `exam_duration`, `e`.`exam_id` AS `exam_id`, `e`.`exam_sponsor_id` AS `exam_sponsor_id`, `a`.`appointment_status` AS `appointment_status` FROM ((`exam` `e` join `exam_registration` `r` on(`e`.`exam_id` = `r`.`exam_id`)) left join `appointment` `a` on(`r`.`exam_registration_id` = `a`.`exam_registration_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `registered_test_takers`  AS SELECT `r`.`test_taker_id` AS `test_taker_id`, `r`.`exam_registration_id` AS `exam_registration_id`, `e`.`exam_name` AS `exam_name`, `e`.`exam_duration` AS `exam_duration`, `e`.`exam_id` AS `exam_id`, `e`.`exam_sponsor_id` AS `exam_sponsor_id`, `a`.`appointment_status` AS `appointment_status`, `a`.`appointment_id` AS `appointment_id` FROM ((`exam` `e` join `exam_registration` `r` on(`e`.`exam_id` = `r`.`exam_id`)) left join `appointment` `a` on(`r`.`exam_registration_id` = `a`.`exam_registration_id`)) ;
 
 -- --------------------------------------------------------
 
@@ -760,25 +812,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `exam`
 --
 ALTER TABLE `exam`
-  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `exam_registration`
 --
 ALTER TABLE `exam_registration`
-  MODIFY `exam_registration_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `exam_registration_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `exam_sponsor`
 --
 ALTER TABLE `exam_sponsor`
-  MODIFY `exam_sponsor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `exam_sponsor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `sponsor_contract`
@@ -790,13 +842,13 @@ ALTER TABLE `sponsor_contract`
 -- AUTO_INCREMENT for table `test_center`
 --
 ALTER TABLE `test_center`
-  MODIFY `test_center_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `test_center_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `test_center_availability`
 --
 ALTER TABLE `test_center_availability`
-  MODIFY `availability_slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `availability_slot_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `test_center_contract`
@@ -808,13 +860,13 @@ ALTER TABLE `test_center_contract`
 -- AUTO_INCREMENT for table `test_taker`
 --
 ALTER TABLE `test_taker`
-  MODIFY `test_taker_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `test_taker_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- Constraints for dumped tables
