@@ -10,7 +10,7 @@
 <body>
       <div class="topbar"> 
         <header>
-            <a class="logo" href="{{ url_for('home') }}">
+            <a class="logo" href="{{ url_for('view_sponsor_exams') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}"
                      style="width:100px; height:100px; vertical-align:middle;">
                 EXAM BOOKER
@@ -58,25 +58,25 @@
                             <tr>
                                 <td>Contract Start Date</td>
                                 {% for d in contract_details %}
-                                    <td>{{ d.sponsor_start_date }}</td>
+                                    <td>{{ d.sponsor_start_date | friendly_date}}</td>
                                 {% endfor %}  
                             </tr>
                             <tr>
                                 <td>Contract End Date</td>
                                 {% for d in contract_details %}
-                                    <td>{{ d.sponsor_end_date }}</td>
+                                    <td>{{ d.sponsor_end_date | friendly_date }}</td>
                                 {% endfor %}    
                             </tr>
                             <tr>
                                 <td>Seat Commitment</td>
                                 {% for d in contract_details %}
-                                    <td>{{ d.seat_commitment }}</td>
+                                    <td>{{ d.seat_commitment }} test takers</td>
                                 {% endfor %}    
                             </tr>
                             <tr>
                                 <td>Rate</td>
                                 {% for d in contract_details %}
-                                    <td>{{ d.rate_per_tester }}</td>
+                                    <td>${{ d.rate_per_tester }} USD</td>
                                 {% endfor %}                              
                             </tr>
                         </tbody>

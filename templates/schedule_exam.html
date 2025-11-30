@@ -10,7 +10,7 @@
 <body>
       <div class="topbar"> 
         <header>
-            <a class="logo" href="{{ url_for('home') }}">
+            <a class="logo" href="{{ url_for('my_registrations') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}"
                      style="width:100px; height:100px; vertical-align:middle;">
                 EXAM BOOKER
@@ -40,13 +40,26 @@
             </div>
                 <br>
                 <section style="padding-left: 30px">
+                <form method="POST" action="{{ url_for('schedule_exam') }}" style="padding-left: 75%">
+                    <input type="hidden" name="sponsor_name" value="{{ sponsor_name }}">
+                    <input type="hidden" name="exam_name" value="{{ exam_name }}">
+                    <input type="hidden" name="exam_registration_id" value="{{ exam_registration_id }}">
+                    <input type="hidden" name="test_taker_id" value="{{ test_taker_id }}">
+                    <input type="hidden" name="selection" value="{{ '' }}">
+                    <button type="submit" class="btn creamb">Clear Search</button>
+                </form>
+                <br>
                 <form method="POST" action="{{ url_for('city_search') }}">
                     <input type="hidden" name="sponsor_name" value="{{ sponsor_name }}">
                     <input type="hidden" name="exam_name" value="{{ exam_name }}">
                     <input type="hidden" name="exam_registration_id" value="{{ exam_registration_id }}">
                     <input type="hidden" name="test_taker_id" value="{{ test_taker_id }}">
                     <p class="exam_reg_sponsor">Search for a city or country</p>
+                    {% if selection %}
+                    <input list="cities" name="selection" class="city-input" value="{{ selection }}">
+                    {% else %}
                     <input list="cities" name="selection" class="city-input">
+                    {% endif %}
                     <datalist id="cities">
                     {% for city in cities %}
                         <option value="{{ city.test_center_city }}">
@@ -57,37 +70,46 @@
                 </section>
                 <br>
                 <br>
+                {% set ns = namespace(last_center=None) %}
+                {% set ns = namespace(last_date=None) %}
                 {% if availabilities %}
-                {% for a in availabilities %}
-                <section style="padding-left: 30px">
-                    <div>
-                        <h3 class="exam_reg_sponsor">{{ a.test_center_name }}</h2>
-                    </div>
-                        <p style="color:var(--grey); margin:0">{{ a.test_center_street }}</p>
-                        <p style="color:var(--grey); margin:0">{{ a.test_center_city }}, {{ a.test_center_state }} {{ a.test_center_zip_code }} </p>
-                        <p style="color:var(--grey); margin:0">{{ a.date_of_availability}}</p>
-                        <form method="POST" action="{{ url_for('book_appointment') }}">
-                            <input type="hidden" name="availability_slot_id" value="{{ a.availability_slot_id }}">
-                            <input type="hidden" name="exam_registration_id" value="{{ exam_registration_id }}">
-                            <button class="btn purpleb circle" type="submit" style="font-size: 18px">{{ a.start_time_slot }}</button>
-                        </form>
+                    {% for a in availabilities %}
+                        {% if a.test_center_name != ns.last_center %}
+                        <section>
+                            <hr>
+                            <div style="padding-left: 30px">
+                                <h3 class="exam_reg_sponsor">{{ a.test_center_name }}</h3>
+                            </div>
+                            <div style="padding-left: 30px">
+                            <p style="color:var(--grey); margin:0">{{ a.test_center_street }}</p>
+                            <p style="color:var(--grey); margin:0">{{ a.test_center_city }}, {{ a.test_center_state }} {{ a.test_center_zip_code }} </p>
+                            </div>
+                            {% set ns.last_center = a.test_center_name %}
+                            {% endif %}
+ 
+                            <div style="padding-left: 30px">
+                            {% if a.date_of_availability != ns.last_date %}
+                            <br>
+                            <p style="color:var(--grey); margin:0">Date: {{ a.date_of_availability | friendly_date}}</p>
+                            {% set ns.last_date = a.date_of_availability %}
+                            {% endif %}
+                            </div>
+                            <div style="padding-left: 30px">
+                            <form method="POST" action="{{ url_for('book_appointment') }}" onsubmit="return confirm('Confirm scheduling selection for {{a.date_of_availability | friendly_date}} at {{a.start_time_slot | friendly_time}}');">
+> 
+                                <input type="hidden" name="availability_slot_id" value="{{ a.availability_slot_id }}">
+                                <input type="hidden" name="exam_registration_id" value="{{ exam_registration_id }}">
+
+                                <button class="btn purpleb circle" type="submit" style="font-size: 18px">{{ a.start_time_slot | friendly_time }}</button>
+                            </form>
+                            </div>
+                        </section>
+                    {% endfor %}
                         <br>
-                        <br>
-                    </section>
-                {% endfor %}
                 {% else %}
                     <p style="color: red; padding-left: 30px;"> No availability matches your search. Please search again. </p>
-                {% endif%}
-            </div>
-            <form>
-                
-            <nav style="justify-content: center">
-                <button class="btn blueb center circle">
-                    Select this appointment
-                </button>
-            </nav>
-            </form>
-            
+                {% endif %}
+            </div>            
         </div>
     </main>
 

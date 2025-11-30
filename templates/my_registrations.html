@@ -10,7 +10,7 @@
 <body>
       <div class="topbar"> 
         <header>
-            <a class="logo" href="{{ url_for('home') }}">
+            <a class="logo" href="{{ url_for('my_registrations') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}"
                      style="width:100px; height:100px; vertical-align:middle;">
                 EXAM BOOKER
@@ -30,13 +30,17 @@
                 <h1 style="color:var(--cream)">My Registrations</h1>
             </div>
             <br>
+            {% set ns = namespace(last_sponsor=None) %}
             {% if registrations %}
                 {% for r in registrations %}
                 <div>
+                    {% if r.sponsor_name != ns.last_sponsor %}
                     <div class="exam_reg_header yellow_bg">
                         <h2 class="exam_reg_sponsor">{{ r.sponsor_name }}</h2>
                     </div>
-                    <div>
+                    {% set ns.last_sponsor = r.sponsor_name %}
+                    {% endif %}
+                    <div style="padding-left: 30px">
                         <h3 class="exam_reg_exam_name">{{ r.exam_name }}</h3>
                         <br>
                         {% if r.appointment_status == "Scheduled" %}
@@ -46,7 +50,7 @@
                             <a>                           
                                 <form method="POST" action="{{ url_for('schedule_exam') }}">
                                     <input type="hidden" name="exam_registration_id" value="{{ r.exam_registration_id }}">
-                                    <button class="btn purpleb" type="submit" style="font-size: 18px">&nbsp;&nbsp;&nbsp;&nbsp;Schedule Exam&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                                    <button class="btn alert" type="submit" style="font-size: 18px">&nbsp;&nbsp;&nbsp;Schedule Exam&nbsp;&nbsp;&nbsp;</button>
                                 </form>
                             </a>
                         {% endif %}

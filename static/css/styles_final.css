@@ -197,6 +197,15 @@ footer{margin:36px 0 12px;color:var(--cream);font-size:14px;text-align:center}
     display: flex;
     justify-content: center;
 }
+
+.alert{
+    background-color: #F5F2A8;
+    border-color: #bb303c;
+    border-style: solid;
+    border-width: 5px;
+
+
+}
 /* CARDS ========================== */
 
 .card{
@@ -506,7 +515,7 @@ tr:nth-child(even) {
 }
 
 .payment_grid{ 
-    display:grid;grid-template-columns: 1fr 2fr 1fr 2fr ;
+    display:grid;grid-template-columns: 1fr 2fr 1fr 2fr ;grid-template-rows: auto auto;
     justify-items: left;  
     gap: 16px;
     font-size: 18px;
@@ -517,4 +526,19 @@ tr:nth-child(even) {
 }
 .payment_grid label{
     color: var(--cream)
+}
+
+.payment_grid nav {
+    grid-column: 1 / -1 !important; 
+    width: 30%;
+    justify-self: center; 
+}
+
+input:invalid {
+    border: 2px solid red;
+}
+
+.time_slot_grid{
+    display:grid; grid-template-columns:  auto auto;
+    justify-items: left;  
 }

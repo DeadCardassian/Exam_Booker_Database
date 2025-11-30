@@ -9,7 +9,7 @@
 <body>
       <div class="topbar"> 
         <header>
-            <a class="logo" href="{{ url_for('home') }}">
+            <a class="logo" href="{{ url_for('my_registrations') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}"
                      style="width:100px; height:100px; vertical-align:middle;">
                 EXAM BOOKER
@@ -74,22 +74,18 @@
                     </form>
                     {% if exam_name and sponsor_name %}
                     <br>
-                    <h3>Total Cost: </h3>
-                    <form class="payment_grid" method="POST" action="{{ url_for('new_exam_registration') }}">
+                    <h3>Total Cost: $ {{ cost }} USD</h3>
+                    <form class="payment_grid" method="POST" method="POST" action="{{ url_for('create_registration') }}">    
                         <label for="name_on_card">Cardholder Name: </label>
-                        <input type="text" id="cardholder_name" name="cardholder_name">
+                        <input type="text" id="cardholder_name" name="cardholder_name" pattern="[A-Za-z ]+" placeholder="Cardholder Name" style="font-size: 20px" required>
                         <label for="card_number">Card Number: </label>
-                        <input type="text" id="card_number" name="card_number">
+                        <input type="text" id="card_number" name="card_number" pattern="[0-9]{16}" placeholder="•••• •••• •••• ••••"style="font-size: 20px"required>
                         <label for="expiration_date">Expiration Date: </label>
-                        <input type="text" id="expiration_date" name="expiration_date">
-                        <label for="cvv">CVV: </label>
-                        <input type="text" id="cvv" name="cvv">
-                    </form>
-                    {% endif %}
-    
-
-                    <p>S: {{sponsor_name}} E: {{exam_name}}</p>
-                </div>
+                        <input id="expiration_date" name="expiration_date" type="text" pattern="[0-9]{2}/[0-9]{4}" placeholder="mm / yyyy" style="font-size: 20px"required>
+                        <label for="cvv">3-digit CVV: </label>
+                        <input type="text" id="cvv" name="cvv" pattern="[0-9]{3}" placeholder="•••"style="font-size: 20px"required>    
+                        <br>
+                    </div>
                 <br>
                 <div class="flash-container" style="color:red">
                     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -100,14 +96,16 @@
                     {% endif %}
                     {% endwith %}
                 </div>
-                <nav style="justify-content: center">
-                    <form method="POST" action="{{ url_for('create_registration') }}">    
+                    <nav style="justify-content: center">
                         <input type="hidden" name="sponsor_name" value="{{ sponsor_name }}">
                         <input type="hidden" name="exam_name" value="{{ exam_name }}">
-                        <button class="btn yellowb long" type="submit">Finish Registration {{sponsor_name}} {{exam_name}}</button>
-                    </form>
+                        <button class="btn yellowb long" type="submit" style="font-size: 20px">Finish Registration</button>
+                    </nav>
+                        <!-- <p>S: {{sponsor_name}} E: {{exam_name}}</p> -->
+                </form>
+                {% endif %}
+
                     
-                </nav>
             </section>
         </div>
     </main>

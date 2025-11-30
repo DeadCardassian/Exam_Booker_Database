@@ -49,10 +49,10 @@
 
                 <section class="login-form">
                         <label for="username">Username: </label>
-                        <input type="text" id="username" name="username">
+                        <input type="text" id="username" name="username" required>
 
                         <label for="password">Password: </label>
-                        <input type="password" id="password" name="password">
+                        <input type="password" id="password" name="password" required>
                         {% with messages = get_flashed_messages(with_categories=true) %}
                             {% if messages %}
                                 <div class="flash-container">

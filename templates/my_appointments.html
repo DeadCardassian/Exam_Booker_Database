@@ -10,7 +10,7 @@
 <body>
       <div class="topbar"> 
         <header>
-            <a class="logo" href="{{ url_for('home') }}">
+            <a class="logo" href="{{ url_for('my_registrations') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}"
                      style="width:100px; height:100px; vertical-align:middle;">
                 EXAM BOOKER
@@ -31,23 +31,27 @@
                 <pre style="color: red">{{ debug_sql }}</pre>
             </div>
             <br>
+            {% set ns = namespace(last_sponsor=None) %}
             {% if appointments %}
                 {% for a in appointments %}
+                {% if a.sponsor_name != ns.last_sponsor %}
                 <div>
                     <div class="exam_reg_header yellow_bg">
                         <h2 class="exam_reg_sponsor">{{ a.sponsor_name }}</h2>
                     </div>
-                    <div>
+                    {% set ns.last_sponsor = a.sponsor_name %}
+                    {% endif %}
+                    <div style="padding-left: 20px">
                         <h3 class="exam_reg_exam_name">{{ a.exam_name }}</h3>
                         {% if a.appointment_status == "Scheduled" %}
                         <div class="appointment_deets">
                         <section>
-                        <div style="padding-left: 50px">
+                        <div style="padding-left: 45px">
                             <h3 class="exam_reg_sponsor">Date and Time</h3>
                         </div>
                         <div style="padding-left: 50px">
-                        <p style="color:var(--grey); margin:0">{{ a.date_of_availability}}</p>
-                        <p style="color:var(--grey); margin:0">{{ a.start_time_slot }} Local Time</p>
+                        <p style="color:var(--grey); margin:0">{{ a.date_of_availability | friendly_date}}</p>
+                        <p style="color:var(--grey); margin:0">{{ a.start_time_slot | friendly_time }} Local Time</p>
                         <p style="color:var(--grey); margin:0">{{ a.exam_duration }} minutes</p>
                         </div>
                         </section>
@@ -55,9 +59,9 @@
                         <div>
                             <h3 class="exam_reg_sponsor">Exam Location</h2>
                         </div>
-                            <p style="color:var(--grey); margin:0">{{ a.test_center_name }}</p>
-                            <p style="color:var(--grey); margin:0">{{ a.test_center_street }}</p>
-                            <p style="color:var(--grey); margin:0">{{ a.test_center_city }},{{ a.test_center_state }} {{ a.test_center_zip_code }} </p>
+                            <p style="color:var(--grey); margin:0; padding-left: 5px">{{ a.test_center_name }}</p>
+                            <p style="color:var(--grey); margin:0; padding-left: 5px">{{ a.test_center_street }}</p>
+                            <p style="color:var(--grey); margin:0; padding-left: 5px">{{ a.test_center_city }},{{ a.test_center_state }} {{ a.test_center_zip_code }} </p>
                         </section>
                         <section style="align-self: center">
                             <form method="POST" action="{{ url_for('schedule_exam') }}">
@@ -78,7 +82,7 @@
                                 <input type="hidden" name="sponsor_name" value="{{ a.sponsor_name }}">
                                 <input type="hidden" name="exam_name" value="{{ a.exam_name }}">
                                 <input type="hidden" name="exam_registration_id" value="{{ a.exam_registration_id }}">
-                                <button class="btn purpleb" style="font-size: 20px" type="submit">Reschedule Exam</button>
+                                <button class="btn alert" style="font-size: 20px" type="submit">Reschedule Exam</button>
                             </form>
                             </a>
                             <a style="color: red">⚠ Your exam was cancelled! Please reschedule it soon.</a>

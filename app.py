@@ -1,5 +1,7 @@
 from flask import Flask, session, render_template, request, redirect, url_for, jsonify, flash
 from datetime import datetime, date
+from functools import wraps
+from flask import make_response
 import mysql.connector
 import bcrypt
 import csv
@@ -9,6 +11,16 @@ import csv
 app = Flask(__name__)
 
 app.secret_key = "my_se_key"  # allow flash
+
+def nocache(view):
+    @wraps(view)
+    def no_cache(*args, **kwargs):
+        response = make_response(view(*args, **kwargs))
+        response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+    return no_cache
 
 #----------------- DB CONNECTION
 def get_connection():
@@ -70,11 +82,8 @@ def login():
             WHERE user_email = %s
         """, (email,))
         user = cursor.fetchone()
-        user_id = user["user_id"]
-        print("************ USER ID *********** ")
-        print(user_id)
-        cursor.close()
-        conn.close()
+        # cursor.close()
+        # conn.close()
 
         # ---- 2) user not found ----
         if not user:
@@ -87,20 +96,62 @@ def login():
             return render_template('login.html')
 
         # ---- 4) check password ----
+        user_id = user["user_id"]
+        print("************ USER ID *********** ")
+        print(user_id)
         stored_hash = user['user_password_h'].encode('utf-8')
-
+  
         if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
+            session["user_id"] = user_id
+            session["user_type"] = user_type
             # flash("Login successful!", "success")
             if user_type == "TT":
-                session["user_id"] = user_id
-                return redirect(url_for("my_registrations", user_id=user_id))
+                cursor.execute("""
+                SELECT test_taker_id
+                FROM test_taker
+                WHERE user_id = %s
+                """, (user_id,))
+
+                test_taker_id = cursor.fetchone()
+                cursor.close()
+                conn.close()
+                
+                if test_taker_id:
+                    return redirect(url_for("my_registrations"))
+                else: 
+                    return redirect(url_for("personal_information", user_id=session.get("user_id"), user_type=session.get("user_type")))
+                
             elif user_type == "TC":
-                session["user_id"] = user_id
-                return redirect(url_for("view_availabilities", user_id=user_id))
-            else:
-                session["user_id"] = user_id
-                return redirect(url_for("sponsor_contract", user_id=user_id))
-               
+                cursor.execute("""
+                SELECT test_center_id
+                FROM test_center
+                WHERE user_id = %s
+                """, (user_id,))
+
+                test_center_id = cursor.fetchone()
+                cursor.close()
+                conn.close()
+
+                if test_center_id: 
+                    return redirect(url_for("view_availabilities"))
+                else:
+                    return redirect(url_for("personal_information", user_id=session.get("user_id"), user_type=session.get("user_type")))
+            else: # if ES type
+                cursor.execute("""
+                SELECT exam_sponsor_id
+                FROM exam_sponsor
+                WHERE user_id = %s
+                """, (user_id,))
+
+                exam_sponsor_id = cursor.fetchone()
+                cursor.close()
+                conn.close()
+
+                if exam_sponsor_id:
+                    return redirect(url_for("view_sponsor_exams", user_id=user_id))
+                else:
+                    return redirect(url_for("personal_information", user_id=session.get("user_id"), user_type=session.get("user_type")))
+
         else:
             flash("Incorrect password.", "error")
             return render_template('login.html')
@@ -269,7 +320,12 @@ def personal_information():
 
 #----------------- TEST TAKER: My Registrations, My Appointments, New Exam Reg, Schedule Exam, Cancel Exam, Reschedule Exam
 @app.route('/my_registrations')
+@nocache
 def my_registrations():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    user_id = session.get("user_id")
+
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     user_id = session.get("user_id")
@@ -293,7 +349,8 @@ def my_registrations():
                 r.exam_registration_id,
                 ROW_NUMBER() OVER (
                     PARTITION BY r.exam_registration_id 
-                    ORDER BY r.appointment_id DESC 
+                    ORDER BY CASE WHEN r.appointment_id IS NULL THEN 0 ELSE 1 END,
+                    r.appointment_id DESC 
                 ) AS rn
             FROM registered_test_takers r
             INNER JOIN exam_sponsor s
@@ -323,6 +380,9 @@ def my_registrations():
 
 @app.route('/my_appointments')
 def my_appointments():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
     user_id = session.get("user_id")
@@ -345,7 +405,8 @@ def my_appointments():
                 a.test_center_zip_code,
                 ROW_NUMBER() OVER (
                     PARTITION BY a.exam_registration_id
-                    ORDER BY a.appointment_id DESC
+                    ORDER BY CASE WHEN a.appointment_id IS NULL THEN 0 ELSE 1 END,
+                    a.appointment_id DESC
                 ) AS row_num
             FROM scheduled_test_takers a
             LEFT JOIN exam_sponsor s
@@ -372,6 +433,7 @@ def my_appointments():
 @app.route('/schedule_exam', methods=['POST', 'GET'])
 def schedule_exam():
     exam_registration_id = request.form.get("exam_registration_id")
+    selection = request.form.get('selection')
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -419,7 +481,8 @@ def schedule_exam():
                 reg_view.exam_duration,
                 ROW_NUMBER() OVER (
                     PARTITION BY reg_view.exam_registration_id
-                    ORDER BY reg_view.appointment_id DESC
+                    ORDER BY CASE WHEN reg_view.appointment_id IS NULL THEN 0 ELSE 1 END,
+                    reg_view.appointment_id DESC
                 ) AS rn
             FROM registered_test_takers reg_view
             WHERE reg_view.test_taker_id = %s
@@ -427,7 +490,8 @@ def schedule_exam():
         ) AS ranked
         WHERE rn = 1
     )
-    AND (tca_view.seat_capacity - tca_view.scheduled_count) > 0;
+    AND (tca_view.seat_capacity - tca_view.scheduled_count) > 0
+    ORDER BY test_center_name ASC, date_of_availability ASC, start_time_slot ASC
 """, (test_taker_id, exam_registration_id,))
 
     availabilities = cursor.fetchall()
@@ -435,7 +499,7 @@ def schedule_exam():
     cursor.close()
     conn.close()
 
-    return render_template("schedule_exam.html", cities=cities, sponsor_name=sponsor_name,exam_name=exam_name,availabilities=availabilities,test_taker_id=test_taker_id,exam_registration_id=exam_registration_id)
+    return render_template("schedule_exam.html", selection=selection,cities=cities, sponsor_name=sponsor_name,exam_name=exam_name,availabilities=availabilities,test_taker_id=test_taker_id,exam_registration_id=exam_registration_id)
 
 @app.route('/schedule_exam/search', methods=['POST', 'GET'])
 def city_search():
@@ -483,7 +547,8 @@ def city_search():
                     reg_view.exam_duration,
                     ROW_NUMBER() OVER (
                         PARTITION BY reg_view.exam_registration_id
-                        ORDER BY reg_view.appointment_id DESC
+                        ORDER BY CASE WHEN reg_view.appointment_id IS NULL THEN 0 ELSE 1 END,
+                    reg_view.appointment_id DESC
                     ) AS rn
                 FROM registered_test_takers reg_view
                 WHERE reg_view.test_taker_id = %s
@@ -495,13 +560,14 @@ def city_search():
         AND tca_view.test_center_city = %s
         OR tca_view.test_center_state = %s
         OR tca_view.test_center_country = %s
-        OR tca_view.test_center_zip_code = %s;
+        OR tca_view.test_center_zip_code = %s
+        ORDER BY test_center_name ASC, date_of_availability ASC, start_time_slot ASC;
     """, (test_taker_id, exam_registration_id, selection, selection, selection, selection ))
     
     availabilities = cursor.fetchall()
 
 
-    return render_template("schedule_exam.html", sponsor_name=sponsor_name, exam_name = exam_name, cities=cities, availabilities= availabilities, test_taker_id = test_taker_id, exam_registration_id = exam_registration_id)
+    return render_template("schedule_exam.html", selection=selection, sponsor_name=sponsor_name, exam_name = exam_name, cities=cities, availabilities= availabilities, test_taker_id = test_taker_id, exam_registration_id = exam_registration_id)
 
 @app.route('/book_appointment', methods=['POST', 'GET'])
 def book_appointment():
@@ -528,7 +594,8 @@ def book_appointment():
                 r.appointment_status,
                 ROW_NUMBER() OVER (
                     PARTITION BY r.exam_registration_id
-                    ORDER BY r.appointment_id DESC
+                    ORDER BY CASE WHEN r.appointment_id IS NULL THEN 0 ELSE 1 END,
+                    r.appointment_id DESC
                 ) AS rn
             FROM registered_test_takers r
             WHERE r.exam_registration_id = %s
@@ -600,6 +667,7 @@ def new_exam_registration():
     sponsor_selection = None
     exam_selection = None
     exams = []
+    cost = 0
 
     if request.method == 'POST':
         sponsor_selection = request.form.get('sponsor_name')
@@ -611,6 +679,24 @@ def new_exam_registration():
             ORDER BY exam_name
         """, (sponsor_selection,))
         exams = cursor.fetchall()
+        
+        if exam_selection:
+            cursor.execute("""
+            SELECT exam_id FROM sponsor_exam_details
+            WHERE exam_name = %s
+            AND sponsor_name = %s
+        """, (exam_selection, sponsor_selection, ))
+            
+            exam_id = cursor.fetchone()
+            exam_id = exam_id["exam_id"]
+
+            cursor.execute("""
+            SELECT cost FROM exam
+            WHERE exam_id = %s
+            """, (exam_id,))
+
+            cost = cursor.fetchone()
+            cost = cost["cost"]
 
     cursor.close()
     conn.close()
@@ -620,7 +706,9 @@ def new_exam_registration():
         sponsors=sponsors,
         exams=exams,
         sponsor_name=sponsor_selection,
-        exam_name=exam_selection
+        exam_name=exam_selection,
+        cost=cost
+
     )
 
 @app.route('/create_registration', methods=['POST', 'GET'])
@@ -649,6 +737,14 @@ def create_registration():
     exam_id = exam_id["exam_id"]
 
     cursor.execute("""
+    SELECT cost FROM exam
+    WHERE exam_id = %s
+    """, (exam_id,))
+
+    cost = cursor.fetchone()
+    cost = cost["cost"]
+
+    cursor.execute("""
     SELECT invoice_number FROM exam_registration
     ORDER BY exam_registration_id DESC
     LIMIT 1
@@ -668,13 +764,11 @@ def create_registration():
     print("********* invoice_number ***********")
     print(invoice_number)
 
-    cost = 100;
-
     cursor.execute("""
         INSERT INTO exam_registration(exam_id, test_taker_id, invoice_number,
-        registration_date, amount_paid)
-        VALUES (%s,%s,%s,CURDATE(),%s);
-    """, (exam_id, test_taker_id, invoice_number, cost ))
+        registration_date)
+        VALUES (%s,%s,%s,CURDATE());
+    """, (exam_id, test_taker_id, invoice_number))
 
     conn.commit()
     cursor.close()
@@ -766,29 +860,42 @@ def upload_availabilities():
             test_center_id = cursor.fetchone()
             test_center_id = test_center_id[0]
 
-            csv_reader = csv.reader(file.stream.read().decode('utf-8').splitlines())
-            next(csv_reader)  # skip header
 
-            count = 0
-            for row in csv_reader:
-                str_date, str_start, str_end, duration, str_capacity = row
-    
-                date_of_availability = datetime.strptime(str_date, "%m/%d/%y").strftime("%Y-%m-%d")
-                start_time_slot = datetime.strptime(str_start, "%H:%M").strftime("%H:%M:%S")
-                end_time_slot   = datetime.strptime(str_end, "%H:%M").strftime("%H:%M:%S")
-                
-                print("***********DATA INSERT*************")
-                print(f"{test_center_id}, {date_of_availability}, {start_time_slot}, {end_time_slot}, {int(str_capacity)}")
+            # ---- 1) Check that exam sponsor has a contract ----
+            cursor.execute("""
+                SELECT test_center_contract_id FROM test_center_contract
+                WHERE test_center_id = %s
+            """, (test_center_id,))
+            test_center_contract_id = cursor.fetchone()
 
-                cursor.execute("""
-                    INSERT INTO test_center_availability 
-                    (test_center_id, date_of_availability, start_time_slot, end_time_slot, seat_capacity)
-                    VALUES (%s, %s, %s, %s, %s)
-                """, (test_center_id, date_of_availability, start_time_slot, end_time_slot, int(str_capacity)))
+            if test_center_contract_id:
+                csv_reader = csv.reader(file.stream.read().decode('utf-8').splitlines())
+                next(csv_reader)  # skip header
 
-                count += 1
+                count = 0
+                for row in csv_reader:
+                    str_date, str_start, str_end, duration, str_capacity = row
+        
+                    date_of_availability = datetime.strptime(str_date, "%m/%d/%y").strftime("%Y-%m-%d")
+                    start_time_slot = datetime.strptime(str_start, "%H:%M").strftime("%H:%M:%S")
+                    end_time_slot   = datetime.strptime(str_end, "%H:%M").strftime("%H:%M:%S")
+                    
+                    print("***********DATA INSERT*************")
+                    print(f"{test_center_id}, {date_of_availability}, {start_time_slot}, {end_time_slot}, {int(str_capacity)}")
 
-            conn.commit()
+                    cursor.execute("""
+                        INSERT INTO test_center_availability 
+                        (test_center_id, date_of_availability, start_time_slot, end_time_slot, seat_capacity)
+                        VALUES (%s, %s, %s, %s, %s)
+                    """, (test_center_id, date_of_availability, start_time_slot, end_time_slot, int(str_capacity)))
+
+                    count += 1
+
+                conn.commit()
+            else: 
+                flash("Adding Availability Disabled. Please contact an Exam Booker Administrator to set up a contract first.", "error")
+                return render_template('upload_availabilities.html')  
+                          
             cursor.close()
             conn.close()
 
@@ -851,7 +958,7 @@ def view_sponsor_exams():
         print(sponsor_id)
 
         cursor.execute("""
-            SELECT e.exam_id, e.exam_name, e.exam_duration, domain, exam_regs.reg_count AS reg_count, exam_schedule.schedule_count AS schedule_count
+            SELECT e.exam_id, e.exam_name, e.exam_duration, domain, cost, exam_regs.reg_count AS reg_count, exam_schedule.schedule_count AS schedule_count
                 FROM exam e
             LEFT JOIN (
                 SELECT exam_id, COUNT(*) AS reg_count
@@ -887,6 +994,7 @@ def add_sponsor_exams():
         exam_name = request.form.get('exam_name')     
         exam_duration = request.form.get('exam_duration')
         domain = request.form.get('domain')  
+        cost = request.form.get('cost')  
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
     
@@ -902,37 +1010,45 @@ def add_sponsor_exams():
             """, (user_id,))
         sponsor_id = cursor.fetchone()
         sponsor_id = sponsor_id["exam_sponsor_id"]
-        print("***********ES ID*************")
-        print("HELLO: " , sponsor_id)
 
-         # ---- 1) Check if any exam already exists with this sponsor (best practice) ----
+         # ---- 1) Check that exam sponsor has a contract ----
         cursor.execute("""
-            SELECT exam_id FROM exam WHERE exam_name = %s AND exam_sponsor_id = %s
-        """, (exam_name,sponsor_id,))
-        existing = cursor.fetchone()
-        print("EXISTING: " ,existing)
+            SELECT sponsor_contract_id FROM sponsor_contract
+            WHERE exam_sponsor_id = %s
+        """, (sponsor_id,))
+        sponsor_contract_id = cursor.fetchone()
 
-        if existing:
+        if sponsor_contract_id:
+            # ---- 2) Check if any exam already exists with this sponsor ----
+            cursor.execute("""
+                SELECT exam_id FROM exam WHERE exam_name = %s AND exam_sponsor_id = %s
+            """, (exam_name,sponsor_id,))
+            existing = cursor.fetchone()
+            print("EXISTING: " ,existing)
+
+            if existing:
+                cursor.close()
+                conn.close()
+                flash("This exam already is registered.", "error")
+                return redirect(url_for("add_sponsor_exams"))
+        
+            # ---- 3) Insert new exam ----
+            cursor.execute("""
+                INSERT INTO exam(exam_sponsor_id, exam_name, exam_duration, domain, cost )
+                VALUES
+                (%s, %s, %s, %s, %s)
+            """, (sponsor_id, exam_name, exam_duration, domain, cost))
+
+            conn.commit()
             cursor.close()
             conn.close()
-            flash("This exam already is registered.", "error")
-            return redirect(url_for("add_sponsor_exams"))
-      
-        # ---- 2) Insert new exam ----
-        cursor.execute("""
-            INSERT INTO exam(exam_sponsor_id, exam_name, exam_duration, domain )
-            VALUES
-            (%s, %s, %s, %s)
-        """, (sponsor_id, exam_name, exam_duration, domain,))
-
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash("Exam added successfully! Click \"Add Another Exam\" to add another", "success")
-        return render_template('add_sponsor_exams.html')
-
+            flash("Exam added successfully!", "success")
+            return render_template('add_sponsor_exams.html')
+        else:
+            flash("Adding Exams Disabled. Please contact an Exam Booker Administrator to set up a contract first.", "error")
+            return render_template('add_sponsor_exams.html')
+        
     except:
-
         return render_template('add_sponsor_exams.html')
 
 @app.route('/sponsors/contract')
@@ -961,7 +1077,6 @@ def sponsor_contract():
 
         contract_details = cursor.fetchall()
                         
-
         cursor.close()
         conn.close()
         return render_template('sponsor_contract.html', contract_details = contract_details)
@@ -974,7 +1089,16 @@ def sponsor_contract():
 
 @app.template_filter("friendly_date")
 def friendly_date(value):
-    return datetime.strptime(value, "%Y-%m-%d").strftime("%B %d, %Y").replace(" 0", " ")
+    return value.strftime("%B %d, %Y")
+
+@app.template_filter("friendly_time")
+def friendly_time(value):
+    total_seconds = value.total_seconds()
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+
+    return datetime.strptime(f"{hours:02d}:{minutes:02d}", "%H:%M").strftime("%I:%M %p").lstrip("0")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
