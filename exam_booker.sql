@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 29, 2025 at 07:25 AM
+-- Generation Time: Nov 30, 2025 at 07:12 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -32,7 +32,6 @@ CREATE TABLE `appointment` (
   `exam_registration_id` int(11) DEFAULT NULL,
   `accomodations` text DEFAULT NULL,
   `appointment_status` enum('Scheduled','Cancelled') NOT NULL,
-  `seat_number` int(11) DEFAULT NULL,
   `availability_slot_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -40,39 +39,44 @@ CREATE TABLE `appointment` (
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `appointment` (`appointment_id`, `exam_registration_id`, `accomodations`, `appointment_status`, `seat_number`, `availability_slot_id`) VALUES
-(3, 2, NULL, 'Scheduled', 5, 11),
-(8, 7, NULL, 'Scheduled', 2, 13),
-(9, 3, NULL, 'Cancelled', 3, NULL),
-(11, 3, NULL, 'Cancelled', 1, 14),
-(12, 4, NULL, 'Scheduled', 2, 11),
-(13, 5, NULL, 'Scheduled', 1, 6),
-(14, 6, NULL, 'Cancelled', 1, 27),
-(15, 8, NULL, 'Scheduled', 3, 11),
-(16, 9, NULL, 'Scheduled', 2, 6),
-(17, 10, NULL, 'Cancelled', 1, 17),
-(18, 11, NULL, 'Cancelled', 1, 19),
-(19, 12, NULL, 'Scheduled', 1, 29),
-(20, 13, NULL, 'Scheduled', 1, 22),
-(21, 14, NULL, 'Cancelled', 2, 17),
-(22, 15, NULL, 'Scheduled', 2, 14),
-(23, 16, NULL, 'Scheduled', 3, 6),
-(24, 1, NULL, 'Cancelled', 1, 4),
-(25, 1, NULL, 'Cancelled', 1, 4),
-(26, 1, NULL, 'Scheduled', 1, 4),
-(27, 6, NULL, 'Scheduled', 1, 27),
-(28, 10, NULL, 'Scheduled', 2, 27),
-(29, 14, NULL, 'Scheduled', 3, 27),
-(30, 11, NULL, 'Scheduled', 4, 27),
-(32, 20, NULL, 'Cancelled', 1, 63),
-(33, 19, NULL, 'Cancelled', NULL, 72),
-(36, 18, NULL, 'Scheduled', NULL, 47),
-(37, 19, NULL, 'Cancelled', NULL, 1),
-(38, 19, NULL, 'Cancelled', NULL, 4),
-(39, 20, NULL, 'Cancelled', NULL, 4),
-(40, 20, NULL, 'Cancelled', NULL, 5),
-(41, 20, NULL, 'Scheduled', NULL, 9),
-(42, 19, NULL, 'Scheduled', NULL, 30);
+INSERT INTO `appointment` (`appointment_id`, `exam_registration_id`, `accomodations`, `appointment_status`, `availability_slot_id`) VALUES
+(3, 2, NULL, 'Scheduled', 11),
+(8, 7, NULL, 'Scheduled', 13),
+(9, 3, NULL, 'Cancelled', NULL),
+(11, 3, NULL, 'Cancelled', 14),
+(12, 4, NULL, 'Scheduled', 11),
+(13, 5, NULL, 'Scheduled', 6),
+(14, 6, NULL, 'Cancelled', 27),
+(15, 8, NULL, 'Scheduled', 11),
+(16, 9, NULL, 'Scheduled', 6),
+(17, 10, NULL, 'Cancelled', 17),
+(18, 11, NULL, 'Cancelled', 19),
+(19, 12, NULL, 'Scheduled', 29),
+(20, 13, NULL, 'Scheduled', 22),
+(21, 14, NULL, 'Cancelled', 17),
+(22, 15, NULL, 'Scheduled', 14),
+(23, 16, NULL, 'Scheduled', 6),
+(24, 1, NULL, 'Cancelled', 4),
+(25, 1, NULL, 'Cancelled', 4),
+(26, 1, NULL, 'Scheduled', 4),
+(27, 6, NULL, 'Scheduled', 27),
+(28, 10, NULL, 'Scheduled', 27),
+(29, 14, NULL, 'Scheduled', 27),
+(30, 11, NULL, 'Scheduled', 27),
+(32, 20, NULL, 'Cancelled', 63),
+(33, 19, NULL, 'Cancelled', 72),
+(36, 18, NULL, 'Scheduled', 47),
+(37, 19, NULL, 'Cancelled', 1),
+(38, 19, NULL, 'Cancelled', 4),
+(39, 20, NULL, 'Cancelled', 4),
+(40, 20, NULL, 'Cancelled', 5),
+(41, 20, NULL, 'Cancelled', 9),
+(42, 19, NULL, 'Cancelled', 30),
+(43, 22, NULL, 'Cancelled', 13),
+(44, 22, NULL, 'Cancelled', 14),
+(45, 24, NULL, 'Scheduled', 4),
+(46, 23, NULL, 'Scheduled', 9),
+(47, 20, NULL, 'Scheduled', 25);
 
 --
 -- Triggers `appointment`
@@ -108,55 +112,57 @@ CREATE TABLE `exam` (
   `exam_sponsor_id` int(11) DEFAULT NULL,
   `exam_name` varchar(100) NOT NULL,
   `exam_duration` int(11) NOT NULL CHECK (`exam_duration` > 0),
-  `domain` varchar(100) DEFAULT NULL
+  `domain` varchar(100) DEFAULT NULL,
+  `cost` decimal(8,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `exam`
 --
 
-INSERT INTO `exam` (`exam_id`, `exam_sponsor_id`, `exam_name`, `exam_duration`, `domain`) VALUES
-(1, 1, 'Project Management Professional', 230, 'Project Management'),
-(2, 1, 'Certified Associate in Project Management', 180, 'Project Management'),
-(3, 2, 'SERIES 7', 225, 'Securities and Investments'),
-(4, 2, 'SERIES 66', 150, 'Securities and Investments'),
-(5, 1, 'Agile Certified Practitioner (PMI-ACP)', 210, 'Agile Management'),
-(6, 4, 'Certified Administrative Professional (CAP)', 60, 'Office Administration'),
-(7, 4, 'Organizational Management Specialty', 95, 'Business Administration'),
-(8, 4, 'Business Management Essentials', 150, 'Business Leadership'),
-(9, 4, 'Strategic Leadership Certification', 200, 'Leadership and Strategy'),
-(10, 4, 'Performance Management and Analytics', 160, 'Operations Management'),
-(11, 5, 'Network Infrastructure Specialist', 120, 'Networking'),
-(12, 5, 'Cloud Solutions Architect Exam', 240, 'Cloud Computing'),
-(13, 6, 'Certified Medical Office Specialist', 60, 'Healthcare Administration'),
-(14, 6, 'Healthcare Compliance Professional', 120, 'Healthcare Compliance'),
-(15, 7, 'Certified Clinical Technician', 120, 'Clinical Practice'),
-(16, 7, 'Medical Records Specialist', 90, 'Health Information Management'),
-(17, 8, 'Renewable Energy Technician', 180, 'Energy Systems'),
-(18, 8, 'Power Systems Safety Certification', 55, 'Electrical Safety'),
-(19, 9, 'Occupational Safety Certification', 45, 'Workplace Safety'),
-(20, 9, 'Certified Compliance Auditor', 210, 'Regulatory Compliance'),
-(21, 10, 'Certified Financial Analyst Exam', 240, 'Finance and Investment'),
-(22, 10, 'Accounting Fundamentals Proficiency', 180, 'Accounting'),
-(23, 11, 'Certified Cybersecurity Analyst', 60, 'Cybersecurity'),
-(24, 11, 'Incident Response Specialist', 120, 'Network Defense'),
-(25, 12, 'Environmental Impact Assessment Certification', 180, 'Environmental Engineering'),
-(26, 13, 'Professional in Human Resources (PHR)', 180, 'Human Resources'),
-(27, 14, 'Certified Data Analyst', 60, 'Data Analytics'),
-(28, 14, 'AI and Machine Learning Practitioner', 90, 'Artificial Intelligence'),
-(29, 14, 'Data Visualization Specialist', 150, 'Data Science'),
-(30, 15, 'Solar Energy Systems Technician', 180, 'Renewable Energy'),
-(31, 15, 'Wind Turbine Maintenance Certification', 150, 'Renewable Energy'),
-(32, 15, 'Energy Storage System Specialist', 90, 'Energy Engineering'),
-(33, 1, 'Risk Management Professional', 150, 'Risk Management'),
-(34, 17, 'Sustainability and Climate Risk Certificate', 60, 'Testing'),
-(35, 17, 'Energy Risk Professional', 60, 'Testing'),
-(36, 17, 'Financial Risk Manager', 60, 'Testing'),
-(37, 17, 'Test Exam 4', 60, 'Testing'),
-(38, 17, 'Test Exam 5', 60, 'Testing'),
-(39, 17, 'Test Exam 6', 90, 'Testing'),
-(40, 17, 'Test Exam 7', 60, 'Testing'),
-(41, 17, 'Test Exam 8', 60, 'Testing');
+INSERT INTO `exam` (`exam_id`, `exam_sponsor_id`, `exam_name`, `exam_duration`, `domain`, `cost`) VALUES
+(1, 1, 'Project Management Professional', 230, 'Project Management', 405.00),
+(2, 1, 'Certified Associate in Project Management', 180, 'Project Management', 295.00),
+(3, 2, 'SERIES 7', 225, 'Securities and Investments', 300.00),
+(4, 2, 'SERIES 66', 150, 'Securities and Investments', 177.00),
+(5, 1, 'Agile Certified Practitioner (PMI-ACP)', 210, 'Agile Management', 495.00),
+(6, 4, 'Certified Administrative Professional (CAP)', 60, 'Office Administration', 205.00),
+(7, 4, 'Organizational Management Specialty', 95, 'Business Administration', 105.00),
+(8, 4, 'Business Management Essentials', 150, 'Business Leadership', 300.00),
+(9, 4, 'Strategic Leadership Certification', 200, 'Leadership and Strategy', 115.00),
+(10, 4, 'Performance Management and Analytics', 160, 'Operations Management', 485.00),
+(11, 5, 'Network Infrastructure Specialist', 120, 'Networking', 600.00),
+(12, 5, 'Cloud Solutions Architect Exam', 240, 'Cloud Computing', 550.00),
+(13, 6, 'Certified Medical Office Specialist', 60, 'Healthcare Administration', 75.00),
+(14, 6, 'Healthcare Compliance Professional', 120, 'Healthcare Compliance', 125.00),
+(15, 7, 'Certified Clinical Technician', 120, 'Clinical Practice', 125.00),
+(16, 7, 'Medical Records Specialist', 90, 'Health Information Management', 115.00),
+(17, 8, 'Renewable Energy Technician', 180, 'Energy Systems', 345.00),
+(18, 8, 'Power Systems Safety Certification', 55, 'Electrical Safety', 65.00),
+(19, 9, 'Occupational Safety Certification', 45, 'Workplace Safety', 90.00),
+(20, 9, 'Certified Compliance Auditor', 210, 'Regulatory Compliance', 300.00),
+(21, 10, 'Certified Financial Analyst Exam', 240, 'Finance and Investment', 825.00),
+(22, 10, 'Accounting Fundamentals Proficiency', 180, 'Accounting', 415.00),
+(23, 11, 'Certified Cybersecurity Analyst', 60, 'Cybersecurity', 250.00),
+(24, 11, 'Incident Response Specialist', 120, 'Network Defense', 345.00),
+(25, 12, 'Environmental Impact Assessment Certification', 180, 'Environmental Engineering', 650.00),
+(26, 13, 'Professional in Human Resources (PHR)', 180, 'Human Resources', 270.00),
+(27, 14, 'Certified Data Analyst', 60, 'Data Analytics', 115.00),
+(28, 14, 'AI and Machine Learning Practitioner', 90, 'Artificial Intelligence', 275.00),
+(29, 14, 'Data Visualization Specialist', 150, 'Data Science', 565.00),
+(30, 15, 'Solar Energy Systems Technician', 180, 'Renewable Energy', 200.00),
+(31, 15, 'Wind Turbine Maintenance Certification', 150, 'Renewable Energy', 200.00),
+(32, 15, 'Energy Storage System Specialist', 90, 'Energy Engineering', 150.00),
+(33, 1, 'Risk Management Professional', 150, 'Risk Management', 300.00),
+(34, 17, 'Sustainability and Climate Risk Certificate', 60, 'Testing', 550.00),
+(35, 17, 'Energy Risk Professional', 60, 'Testing', 800.00),
+(36, 17, 'Financial Risk Manager', 60, 'Testing', 800.00),
+(37, 17, 'Test Exam 4', 60, 'Testing', NULL),
+(38, 17, 'Test Exam 5', 60, 'Testing', NULL),
+(39, 17, 'Test Exam 6', 90, 'Testing', NULL),
+(40, 17, 'Test Exam 7', 60, 'Testing', NULL),
+(41, 17, 'Test Exam 8', 60, 'Testing', NULL),
+(42, 17, 'Testing Exam', 60, 'Testing', 150.00);
 
 -- --------------------------------------------------------
 
@@ -169,36 +175,38 @@ CREATE TABLE `exam_registration` (
   `exam_id` int(11) DEFAULT NULL,
   `test_taker_id` int(11) DEFAULT NULL,
   `invoice_number` varchar(12) DEFAULT NULL,
-  `registration_date` date DEFAULT NULL,
-  `amount_paid` decimal(8,2) DEFAULT NULL
+  `registration_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `exam_registration`
 --
 
-INSERT INTO `exam_registration` (`exam_registration_id`, `exam_id`, `test_taker_id`, `invoice_number`, `registration_date`, `amount_paid`) VALUES
-(1, 1, 1, 'INV-000001', '2025-10-03', 405.00),
-(2, 3, 1, 'INV-000002', '2025-09-17', 300.00),
-(3, 8, 3, 'INV-000003', '2025-02-16', 310.00),
-(4, 12, 4, 'INV-000004', '2025-03-01', 995.00),
-(5, 13, 5, 'INV-000005', '2025-03-15', 180.00),
-(6, 17, 6, 'INV-000006', '2025-04-02', 390.00),
-(7, 19, 7, 'INV-000007', '2025-04-19', 150.00),
-(8, 21, 8, 'INV-000008', '2025-05-05', 825.00),
-(9, 23, 9, 'INV-000009', '2025-05-22', 640.00),
-(10, 25, 10, 'INV-000010', '2025-06-04', 320.00),
-(11, 34, 11, 'INV-000011', '2025-07-10', 375.00),
-(12, 27, 12, 'INV-000012', '2025-07-28', 440.00),
-(13, 28, 13, 'INV-000013', '2025-08-13', 1125.00),
-(14, 35, 14, 'INV-000014', '2025-09-02', 380.00),
-(15, 34, 15, 'INV-000015', '2025-09-27', 825.00),
-(16, 6, 2, 'INV-000016', '2025-02-04', 225.00),
-(17, 36, 3, 'INV-000017', '2025-02-16', 310.00),
-(18, 36, 41, 'INV-000018', '2025-02-16', 310.00),
-(19, 36, 45, 'INV-000019', '2025-02-16', 310.00),
-(20, 35, 45, 'INV-000020', '2025-02-16', 310.00),
-(21, 19, 45, 'INV-000021', '2025-11-29', 100.00);
+INSERT INTO `exam_registration` (`exam_registration_id`, `exam_id`, `test_taker_id`, `invoice_number`, `registration_date`) VALUES
+(1, 1, 1, 'INV-000001', '2025-10-03'),
+(2, 3, 1, 'INV-000002', '2025-09-17'),
+(3, 8, 3, 'INV-000003', '2025-02-16'),
+(4, 12, 4, 'INV-000004', '2025-03-01'),
+(5, 13, 5, 'INV-000005', '2025-03-15'),
+(6, 17, 6, 'INV-000006', '2025-04-02'),
+(7, 19, 7, 'INV-000007', '2025-04-19'),
+(8, 21, 8, 'INV-000008', '2025-05-05'),
+(9, 23, 9, 'INV-000009', '2025-05-22'),
+(10, 25, 10, 'INV-000010', '2025-06-04'),
+(11, 34, 11, 'INV-000011', '2025-07-10'),
+(12, 27, 12, 'INV-000012', '2025-07-28'),
+(13, 28, 13, 'INV-000013', '2025-08-13'),
+(14, 35, 14, 'INV-000014', '2025-09-02'),
+(15, 34, 15, 'INV-000015', '2025-09-27'),
+(16, 6, 2, 'INV-000016', '2025-02-04'),
+(17, 36, 3, 'INV-000017', '2025-02-16'),
+(18, 36, 41, 'INV-000018', '2025-02-16'),
+(19, 36, 45, 'INV-000019', '2025-02-16'),
+(20, 35, 45, 'INV-000020', '2025-02-16'),
+(21, 19, 45, 'INV-000021', '2025-11-29'),
+(22, 16, 46, 'INV-000022', '2025-11-29'),
+(23, 17, 45, 'INV-000023', '2025-11-29'),
+(24, 27, 45, 'INV-000024', '2025-11-29');
 
 -- --------------------------------------------------------
 
@@ -233,7 +241,8 @@ INSERT INTO `exam_sponsor` (`exam_sponsor_id`, `sponsor_name`, `user_id`) VALUES
 (14, 'Data Analytics and AI Certification Institute', 54),
 (15, 'Renewable Energy Training Alliance', 55),
 (17, 'Global Association of Risk Professionals', 65),
-(18, 'sadgfadfasdf', 85);
+(18, 'sadgfadfasdf', 85),
+(19, 'Exam Sponsor Number 4', 94);
 
 -- --------------------------------------------------------
 
@@ -269,7 +278,6 @@ CREATE TABLE `scheduled_test_takers` (
 ,`appointment_id` int(11)
 ,`accomodations` text
 ,`appointment_status` enum('Scheduled','Cancelled')
-,`seat_number` int(11)
 ,`availability_slot_id` int(11)
 ,`date_of_availability` date
 ,`start_time_slot` time
@@ -374,7 +382,8 @@ INSERT INTO `test_center` (`test_center_id`, `test_center_name`, `test_center_st
 (13, 'test', '123 main st', 'new york', 'ny', 'usa', '10031', 63),
 (14, 'asdfasdfasd', 'asdfasdf', 'asdfasdf', 'asdfasdf', 'asdfasdf', '435424', 84),
 (15, 'asdfasdfasd', 'asdfasdf', 'asdfasdf', 'asdfasdf', 'asdfasdf', '435424', 87),
-(16, 'Testing Test Center', 'asdfasdf', 'asdfasdf', 'asdfasdf', 'asdfasdf', '435424', 90);
+(16, 'Testing Test Center', 'asdfasdf', 'asdfasdf', 'asdfasdf', 'asdfasdf', '435424', 90),
+(17, 'New TC', '465 Street Road', 'Cheltenham', 'London', 'UK', '12346', 95);
 
 -- --------------------------------------------------------
 
@@ -423,7 +432,7 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (1, 1, '2025-12-10', '09:00:00', '10:00:00', 5, 0),
 (2, 1, '2025-12-10', '10:00:00', '11:00:00', 5, 0),
 (3, 1, '2025-12-10', '11:00:00', '12:00:00', 5, 0),
-(4, 1, '2025-12-10', '12:00:00', '16:00:00', 5, 1),
+(4, 1, '2025-12-10', '12:00:00', '16:00:00', 5, 2),
 (5, 1, '2025-12-10', '16:00:00', '18:00:00', 5, 0),
 (6, 1, '2025-12-11', '09:00:00', '10:00:00', 5, 3),
 (7, 1, '2025-12-11', '10:00:00', '11:00:00', 5, 0),
@@ -443,12 +452,12 @@ INSERT INTO `test_center_availability` (`availability_slot_id`, `test_center_id`
 (22, 5, '2025-12-15', '09:00:00', '10:30:00', 3, 1),
 (23, 5, '2025-12-15', '11:00:00', '13:00:00', 4, 0),
 (24, 5, '2026-01-06', '09:00:00', '11:00:00', 5, 0),
-(25, 6, '2025-12-18', '08:00:00', '10:00:00', 3, 1),
+(25, 6, '2025-12-18', '08:00:00', '10:00:00', 3, 2),
 (26, 6, '2025-12-18', '10:15:00', '12:45:00', 5, 0),
 (27, 6, '2026-01-10', '09:00:00', '12:00:00', 4, 4),
 (28, 7, '2025-12-20', '09:00:00', '10:00:00', 4, 0),
 (29, 7, '2025-12-20', '11:15:00', '12:15:00', 4, 1),
-(30, 7, '2026-01-04', '09:00:00', '12:30:00', 5, 1),
+(30, 7, '2026-01-04', '09:00:00', '12:30:00', 5, 0),
 (31, 8, '2025-12-22', '08:00:00', '09:00:00', 3, 0),
 (32, 8, '2025-12-22', '10:15:00', '13:15:00', 4, 0),
 (33, 8, '2026-01-07', '09:00:00', '11:00:00', 5, 0),
@@ -594,7 +603,9 @@ INSERT INTO `test_taker` (`test_taker_id`, `first_name`, `last_name`, `phone_num
 (42, 'Khushi', 'Thomas', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 86),
 (43, 'Elyse', 'Monyette', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 88),
 (44, 'Cleopatra', 'DeMarco', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 89),
-(45, 'Cleopatra', 'Thomas', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 66);
+(45, 'Cleopatra', 'Thomas', '435456', '123 main st', 'New York', 'NY', 'USA', '123456', 66),
+(46, 'Yang', 'Han', '123456789', '789 Springfield Street', 'Boston', 'MA', 'USA', '78943', 92),
+(47, 'Chloe', 'Thomas', '7897897896', '354 New York St', 'Munich', '', 'Germany', '564321', 93);
 
 -- --------------------------------------------------------
 
@@ -691,7 +702,11 @@ INSERT INTO `user` (`user_id`, `user_email`, `user_password_h`, `user_type`) VAL
 (88, 'tt15@example.com', '$2b$12$UCJtUgOQdDxmwR7kbmCQe.MDYPUOSKTgiXr5jEjCxiFWl0.badWnu', 'TT'),
 (89, 'tt16@example.com', '$2b$12$jtnSIH.UPYum8XsOcOtaXenD6luVY69q1cWo3TFDsnOtQdaxWHRAq', 'TT'),
 (90, 'tc5@example.com', '$2b$12$IBJBFBhaJaX5oOZ7GvAa9.XrwTj7MvLy7H5c7IBM7F3GNqDMXi0Rq', 'TC'),
-(91, 'tt17@example.com', '$2b$12$.9Ocq/7L4VP3C/T.jmhrRuBZO5EY/wAaSOzllZcZt/3JwGRUtYiuy', 'TT');
+(91, 'tt17@example.com', '$2b$12$.9Ocq/7L4VP3C/T.jmhrRuBZO5EY/wAaSOzllZcZt/3JwGRUtYiuy', 'TT'),
+(92, 'tt18@example.com', '$2b$12$a6/dUPyRx6k4SlLP159jx.YypJFT51r2WzHOFWBn88cSufhLq5nn2', 'TT'),
+(93, 'tt20@example.com', '$2b$12$rqPvq2MLQxU9VovCADnkoex5n3OLIjUwZrKa897DUBtupCxFOBbWa', 'TT'),
+(94, 'es4@example.com', '$2b$12$9zx2Uzgrrw0VzoC2L38FbusTrb7WeX7vvhnJoWnfLTOk6MCwB.8Ja', 'ES'),
+(95, 'tc6@example.com', '$2b$12$M0oj2tHcDRU6gM727yWXtOGJDstTEu8nIDNT5ng.66TTMu6aP4Ti6', 'TC');
 
 -- --------------------------------------------------------
 
@@ -709,7 +724,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `scheduled_test_takers`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `scheduled_test_takers`  AS SELECT `e`.`exam_id` AS `exam_id`, `e`.`exam_sponsor_id` AS `exam_sponsor_id`, `e`.`exam_duration` AS `exam_duration`, `t`.`test_taker_id` AS `test_taker_id`, `t`.`state_address` AS `state_address`, `t`.`country` AS `country`, `r`.`exam_registration_id` AS `exam_registration_id`, `a`.`appointment_id` AS `appointment_id`, `a`.`accomodations` AS `accomodations`, `a`.`appointment_status` AS `appointment_status`, `a`.`seat_number` AS `seat_number`, `av`.`availability_slot_id` AS `availability_slot_id`, `av`.`date_of_availability` AS `date_of_availability`, `av`.`start_time_slot` AS `start_time_slot`, `av`.`end_time_slot` AS `end_time_slot`, `av`.`seat_capacity` AS `seat_capacity`, `av`.`scheduled_count` AS `scheduled_count`, `tc`.`test_center_id` AS `test_center_id`, `tc`.`test_center_name` AS `test_center_name`, `tc`.`test_center_street` AS `test_center_street`, `tc`.`test_center_state` AS `test_center_state`, `tc`.`test_center_city` AS `test_center_city`, `tc`.`test_center_country` AS `test_center_country`, `tc`.`test_center_zip_code` AS `test_center_zip_code` FROM (((((`test_taker` `t` join `exam_registration` `r` on(`t`.`test_taker_id` = `r`.`test_taker_id`)) join `exam` `e` on(`r`.`exam_id` = `e`.`exam_id`)) join `appointment` `a` on(`r`.`exam_registration_id` = `a`.`exam_registration_id`)) join `test_center_availability` `av` on(`a`.`availability_slot_id` = `av`.`availability_slot_id`)) join `test_center` `tc` on(`av`.`test_center_id` = `tc`.`test_center_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `scheduled_test_takers`  AS SELECT `e`.`exam_id` AS `exam_id`, `e`.`exam_sponsor_id` AS `exam_sponsor_id`, `e`.`exam_duration` AS `exam_duration`, `t`.`test_taker_id` AS `test_taker_id`, `t`.`state_address` AS `state_address`, `t`.`country` AS `country`, `r`.`exam_registration_id` AS `exam_registration_id`, `a`.`appointment_id` AS `appointment_id`, `a`.`accomodations` AS `accomodations`, `a`.`appointment_status` AS `appointment_status`, `av`.`availability_slot_id` AS `availability_slot_id`, `av`.`date_of_availability` AS `date_of_availability`, `av`.`start_time_slot` AS `start_time_slot`, `av`.`end_time_slot` AS `end_time_slot`, `av`.`seat_capacity` AS `seat_capacity`, `av`.`scheduled_count` AS `scheduled_count`, `tc`.`test_center_id` AS `test_center_id`, `tc`.`test_center_name` AS `test_center_name`, `tc`.`test_center_street` AS `test_center_street`, `tc`.`test_center_state` AS `test_center_state`, `tc`.`test_center_city` AS `test_center_city`, `tc`.`test_center_country` AS `test_center_country`, `tc`.`test_center_zip_code` AS `test_center_zip_code` FROM (((((`test_taker` `t` join `exam_registration` `r` on(`t`.`test_taker_id` = `r`.`test_taker_id`)) join `exam` `e` on(`r`.`exam_id` = `e`.`exam_id`)) join `appointment` `a` on(`r`.`exam_registration_id` = `a`.`exam_registration_id`)) join `test_center_availability` `av` on(`a`.`availability_slot_id` = `av`.`availability_slot_id`)) join `test_center` `tc` on(`av`.`test_center_id` = `tc`.`test_center_id`)) ;
 
 -- --------------------------------------------------------
 
@@ -812,25 +827,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `appointment`
 --
 ALTER TABLE `appointment`
-  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `appointment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `exam`
 --
 ALTER TABLE `exam`
-  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `exam_registration`
 --
 ALTER TABLE `exam_registration`
-  MODIFY `exam_registration_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `exam_registration_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `exam_sponsor`
 --
 ALTER TABLE `exam_sponsor`
-  MODIFY `exam_sponsor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `exam_sponsor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `sponsor_contract`
@@ -842,7 +857,7 @@ ALTER TABLE `sponsor_contract`
 -- AUTO_INCREMENT for table `test_center`
 --
 ALTER TABLE `test_center`
-  MODIFY `test_center_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `test_center_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `test_center_availability`
@@ -860,13 +875,13 @@ ALTER TABLE `test_center_contract`
 -- AUTO_INCREMENT for table `test_taker`
 --
 ALTER TABLE `test_taker`
-  MODIFY `test_taker_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `test_taker_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
 -- Constraints for dumped tables
