@@ -71,9 +71,11 @@
                                 <button class="btn purpleb" style="font-size: 20px" type="submit">Reschedule Exam</button>
                             </form>
                             <br>
-                             <form method="POST" action="{{ url_for('cancel_appointment') }}">
+                             <form method="POST" action="{{ url_for('cancel_appointment') }}" onsubmit="return confirm('Confirm you would like to cancel your {{a.exam_name }} exam for {{a.date_of_availability | friendly_date}} at {{a.start_time_slot | friendly_time}}');">
                                 <input type="hidden" name="exam_registration_id" value="{{ a.exam_registration_id }}">
-                                <button class="btn purpleb" style="font-size: 20px" type="submit">&nbsp;&nbsp;&nbsp;&nbsp;Cancel Exam&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                                <button class="btn purpleb" style="font-size: 20px" type="submit">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;Cancel Exam&nbsp;&nbsp;&nbsp;&nbsp;
+                                </button>
                             </form>
 
                             {% else %}

@@ -290,6 +290,7 @@ def personal_information():
             conn.close()
 
             return redirect(url_for("view_availabilities", user_id=user_id))
+        
         if user_type == "ES":
             sponsor_name = request.form.get('sponsor_name') 
 
@@ -474,7 +475,7 @@ def schedule_exam():
     cursor.execute("""
     SELECT *
     FROM test_centers_with_availability tca_view
-    WHERE tca_view.slot_duration > (
+    WHERE tca_view.slot_duration >= (
         SELECT exam_duration
         FROM (
             SELECT
@@ -540,7 +541,7 @@ def city_search():
     cursor.execute("""
         SELECT *
         FROM test_centers_with_availability tca_view
-        WHERE tca_view.slot_duration > (
+        WHERE tca_view.slot_duration >= (
             SELECT exam_duration
             FROM (
                 SELECT
@@ -557,10 +558,10 @@ def city_search():
             WHERE rn = 1
         )
         AND (tca_view.seat_capacity - tca_view.scheduled_count) > 0
-        AND tca_view.test_center_city = %s
+        AND (tca_view.test_center_city = %s
         OR tca_view.test_center_state = %s
         OR tca_view.test_center_country = %s
-        OR tca_view.test_center_zip_code = %s
+        OR tca_view.test_center_zip_code = %s)
         ORDER BY test_center_name ASC, date_of_availability ASC, start_time_slot ASC;
     """, (test_taker_id, exam_registration_id, selection, selection, selection, selection ))
     
@@ -861,7 +862,7 @@ def upload_availabilities():
             test_center_id = test_center_id[0]
 
 
-            # ---- 1) Check that exam sponsor has a contract ----
+            # ---- 1) Check that test center has a contract ----
             cursor.execute("""
                 SELECT test_center_contract_id FROM test_center_contract
                 WHERE test_center_id = %s
@@ -874,7 +875,7 @@ def upload_availabilities():
 
                 count = 0
                 for row in csv_reader:
-                    str_date, str_start, str_end, duration, str_capacity = row
+                    str_date, str_start, str_end, str_capacity = row
         
                     date_of_availability = datetime.strptime(str_date, "%m/%d/%y").strftime("%Y-%m-%d")
                     start_time_slot = datetime.strptime(str_start, "%H:%M").strftime("%H:%M:%S")
@@ -961,11 +962,9 @@ def view_sponsor_exams():
             SELECT e.exam_id, e.exam_name, e.exam_duration, domain, cost, exam_regs.reg_count AS reg_count, exam_schedule.schedule_count AS schedule_count
                 FROM exam e
             LEFT JOIN (
-                SELECT exam_id, COUNT(*) AS reg_count
+                SELECT exam_id, COUNT(DISTINCT(test_taker_id)) AS reg_count
                 FROM registered_test_takers r
-                WHERE exam_sponsor_id = %s
-                AND appointment_status = "Scheduled"
-                OR appointment_status IS NULL                
+                WHERE exam_sponsor_id = %s            
                 GROUP BY exam_id) exam_regs
                 ON e.exam_id = exam_regs.exam_id
                 LEFT JOIN (
